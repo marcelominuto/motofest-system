@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Evento {
+  id           Int           @id @default(autoincrement())
+  nome         String
+  dataInicio   DateTime
+  dataFim      DateTime
+  ativo        Boolean       @default(false)
+  ingressos    Ingresso[]
+  datas        Data[]
+  horarios     Horario[]
+  agendamentos Agendamento[]
+  pedidos      Pedido[]
+  cortesias    Cortesia[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Ingresso {
+  id         Int      @id @default(autoincrement())
+  eventoId   Int
+  tipo       String
+  descricao  String?
+  valor      Decimal?  // ← usado só para "normal"
+  valor1     Decimal?  // ← usado para "test ride"
+  valor2     Decimal?
+  valor3     Decimal?
+  limite     Int?
+  categoria  String
+  evento     Evento    @relation(fields: [eventoId], references: [id])
+}
+
+
+
+model Marca {
+  id        Int        @id @default(autoincrement())
+  nome      String     @unique
+  motos     Moto[]
+  cortesias Cortesia[]
+}
+
+model Moto {
+  id           Int           @id @default(autoincrement())
+  marcaId      Int
+  nome         String
+  quantidade   Int
+  categoria    String
+  marca        Marca         @relation(fields: [marcaId], references: [id])
+  agendamentos Agendamento[]
+}
+
+model Cliente {
+  id           Int           @id @default(autoincrement())
+  nome         String
+  email        String
+  cpf          String        @unique
+  cnh          String
+  telefone     String?
+  agendamentos Agendamento[]
+  pedidos      Pedido[]
+}
+
+model Data {
+  id       Int       @id @default(autoincrement())
+  data     DateTime
+  eventoId Int
+  evento   Evento    @relation(fields: [eventoId], references: [id])
+  horarios Horario[]
+}
+
+model Horario {
+  id           Int           @id @default(autoincrement())
+  hora         String
+  eventoId     Int
+  dataId       Int
+  evento       Evento        @relation(fields: [eventoId], references: [id])
+  data         Data          @relation(fields: [dataId], references: [id])
+  agendamentos Agendamento[]
+}
+
+model Agendamento {
+  id         Int      @id @default(autoincrement())
+  clienteId  Int
+  ingressoId Int
+  motoId     Int
+  data       DateTime
+  horarioId  Int
+  eventoId   Int
+  codigo     String   @unique
+  status     String   @default("pendente") // pago, pendente, cortesia, checkin
+  checkin    Boolean  @default(false)
+
+  cliente  Cliente  @relation(fields: [clienteId], references: [id])
+  ingresso Ingresso @relation(fields: [ingressoId], references: [id])
+  moto     Moto     @relation(fields: [motoId], references: [id])
+  horario  Horario  @relation(fields: [horarioId], references: [id])
+  evento   Evento   @relation(fields: [eventoId], references: [id])
+}
+
+model Pedido {
+  id        Int      @id @default(autoincrement())
+  clienteId Int
+  eventoId  Int
+  valor     Decimal
+  status    String   @default("pendente") // pago, pendente, cancelado, abandonado
+  createdAt DateTime @default(now())
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+  evento  Evento  @relation(fields: [eventoId], references: [id])
+}
+
+model Cortesia {
+  id        Int     @id @default(autoincrement())
+  eventoId  Int
+  marcaId   Int
+  codigo    String  @unique
+  utilizado Boolean @default(false)
+
+  evento Evento @relation(fields: [eventoId], references: [id])
+  marca  Marca  @relation(fields: [marcaId], references: [id])
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
