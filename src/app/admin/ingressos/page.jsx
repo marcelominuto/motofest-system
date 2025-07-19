@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CreateIngressoModal from "@/components/admin/CreateIngressoModal";
 import EditIngressoModal from "@/components/admin/EditIngressoModal";
 import DeleteIngressoButton from "@/components/admin/DeleteIngressoButton";
+import { Button } from "@/components/ui/button";
 
 export default function IngressosPage() {
   const [ingressos, setIngressos] = useState([]);
@@ -11,6 +12,10 @@ export default function IngressosPage() {
   const fetchIngressos = async () => {
     const res = await fetch("/api/ingressos");
     const data = await res.json();
+    if (!Array.isArray(data)) {
+      toast.error("Nenhum evento ativo ou erro ao carregar ingressos");
+      return;
+    }
     setIngressos(data);
   };
 
@@ -51,16 +56,16 @@ export default function IngressosPage() {
                 </td>
                 <td className="border p-2">{i.limite ?? "∞"}</td>
                 <td className="border p-2">
-                  <button
-                    className="text-blue-600 hover:underline text-xs mr-3"
+                  <Button
+                    size="sm"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                     onClick={() => {
                       setIngressoSelecionado(i);
                       setModalAberto(true);
                     }}
                   >
                     Editar
-                  </button>
-
+                  </Button>
                   <DeleteIngressoButton id={i.id} onDeleted={fetchIngressos} />
                 </td>
               </tr>

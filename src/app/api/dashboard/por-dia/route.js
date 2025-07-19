@@ -4,8 +4,22 @@ import prisma from "@/lib/prisma";
 // GET /api/dashboard/por-dia
 export async function GET() {
   try {
+    const eventoAtivo = await prisma.evento.findFirst({
+      where: { ativo: true },
+    });
+
+    if (!eventoAtivo) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado" },
+        { status: 404 }
+      );
+    }
+
     const dados = await prisma.agendamento.groupBy({
       by: ["data"],
+      where: {
+        eventoId: eventoAtivo.id,
+      },
       _count: true,
       orderBy: {
         data: "asc",
@@ -13,7 +27,7 @@ export async function GET() {
     });
 
     const resposta = dados.map((item) => ({
-      data: item.data.toISOString().split("T")[0], // formatar para YYYY-MM-DD
+      data: item.data.toISOString().split("T")[0],
       quantidade: item._count,
     }));
 

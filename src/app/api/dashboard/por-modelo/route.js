@@ -4,8 +4,22 @@ import prisma from "@/lib/prisma";
 // GET /api/dashboard/por-modelo
 export async function GET() {
   try {
+    const eventoAtivo = await prisma.evento.findFirst({
+      where: { ativo: true },
+    });
+
+    if (!eventoAtivo) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado" },
+        { status: 404 }
+      );
+    }
+
     const dados = await prisma.agendamento.groupBy({
       by: ["motoId"],
+      where: {
+        eventoId: eventoAtivo.id,
+      },
       _count: true,
     });
 

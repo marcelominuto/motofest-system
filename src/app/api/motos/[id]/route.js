@@ -3,24 +3,44 @@ import prisma from "@/lib/prisma";
 
 // PUT: Update motorcycle by ID
 export async function PUT(req, { params }) {
-  const { id } = params;
-  const { nome, marcaId, quantidade, categoria } = await req.json();
+  const { id } = await params;
+  const { nome, marcaId, quantidade, categoria, ingressoId } = await req.json();
 
-  if (!nome || !marcaId || !quantidade || !categoria) {
+  if (!nome || !marcaId || !quantidade || !categoria || !ingressoId) {
     return NextResponse.json(
-      { error: "All fields (name, brand ID, quantity, category) are required" },
+      {
+        error:
+          "Todos os campos (nome, marca, quantidade, categoria, ingresso) são obrigatórios.",
+      },
       { status: 400 }
     );
   }
 
   try {
+    // Verificar se o ingresso existe
+    const ingresso = await prisma.ingresso.findUnique({
+      where: { id: parseInt(ingressoId) },
+    });
+
+    if (!ingresso) {
+      return NextResponse.json(
+        { error: "Ingresso não encontrado." },
+        { status: 404 }
+      );
+    }
+
     const updated = await prisma.moto.update({
       where: { id: parseInt(id) },
       data: {
         nome,
         marcaId: parseInt(marcaId),
+        ingressoId: parseInt(ingressoId),
         quantidade: parseInt(quantidade),
         categoria,
+      },
+      include: {
+        marca: true,
+        ingresso: true,
       },
     });
 
@@ -28,7 +48,7 @@ export async function PUT(req, { params }) {
   } catch (error) {
     console.error("PUT /motos/[id] error:", error);
     return NextResponse.json(
-      { error: "Failed to update motorcycle" },
+      { error: "Erro ao atualizar motocicleta." },
       { status: 500 }
     );
   }
@@ -36,7 +56,7 @@ export async function PUT(req, { params }) {
 
 // DELETE: Delete motorcycle by ID
 export async function DELETE(_req, { params }) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     await prisma.moto.delete({
@@ -47,7 +67,7 @@ export async function DELETE(_req, { params }) {
   } catch (error) {
     console.error("DELETE /motos/[id] error:", error);
     return NextResponse.json(
-      { error: "Failed to delete motorcycle" },
+      { error: "Erro ao excluir motocicleta." },
       { status: 500 }
     );
   }

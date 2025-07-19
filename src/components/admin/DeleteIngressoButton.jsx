@@ -41,8 +41,9 @@ export default function DeleteIngressoButton({ id, onDeleted }) {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          variant="ghost"
-          className="text-red-600 text-xs p-0 hover:underline"
+          size="sm"
+          onClick={handleDelete}
+          className="bg-red-600 hover:bg-red-700 text-white"
         >
           Excluir
         </Button>

@@ -10,13 +10,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -107,20 +100,17 @@ export default function CreateIngressoModal({ onCreated }) {
 
           <div>
             <Label className="py-2">Categoria</Label>
-            <Select
+            <select
               value={form.categoria}
-              onValueChange={(value) =>
-                setForm((prev) => ({ ...prev, categoria: value }))
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, categoria: e.target.value }))
               }
+              className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione a categoria" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="normal">Normal</SelectItem>
-                <SelectItem value="test ride">Test Ride</SelectItem>
-              </SelectContent>
-            </Select>
+              <option value="">Selecione a categoria</option>
+              <option value="normal">Normal</option>
+              <option value="test ride">Test Ride</option>
+            </select>
           </div>
 
           {form.categoria === "normal" && (

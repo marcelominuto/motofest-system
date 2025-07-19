@@ -126,7 +126,10 @@ export default function CreateClienteModal({ onCreated }) {
         </div>
 
         <div className="flex justify-end">
-          <Button onClick={handleSubmit} className="bg-green-600 text-white">
+          <Button
+            onClick={handleSubmit}
+            className="bg-green-600 text-white hover:bg-green-700"
+          >
             Salvar
           </Button>
         </div>

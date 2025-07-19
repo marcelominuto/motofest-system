@@ -4,8 +4,22 @@ import prisma from "@/lib/prisma";
 // GET /api/dashboard/por-marca
 export async function GET() {
   try {
+    const eventoAtivo = await prisma.evento.findFirst({
+      where: { ativo: true },
+    });
+
+    if (!eventoAtivo) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado" },
+        { status: 404 }
+      );
+    }
+
     const dados = await prisma.agendamento.groupBy({
       by: ["motoId"],
+      where: {
+        eventoId: eventoAtivo.id,
+      },
       _count: true,
     });
 
@@ -23,7 +37,7 @@ export async function GET() {
       })
     );
 
-    // Agrupar por marca somando tudo
+    // Agrupar por marca somando
     const marcas = {};
     for (const r of resultados) {
       marcas[r.marca] = (marcas[r.marca] || 0) + r.quantidade;

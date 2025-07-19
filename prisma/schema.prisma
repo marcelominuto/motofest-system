@@ -14,7 +14,6 @@ model Evento {
   dataFim      DateTime
   ativo        Boolean       @default(false)
   ingressos    Ingresso[]
-  datas        Data[]
   horarios     Horario[]
   agendamentos Agendamento[]
   pedidos      Pedido[]
@@ -28,16 +27,16 @@ model Ingresso {
   eventoId   Int
   tipo       String
   descricao  String?
-  valor      Decimal?  // ← usado só para "normal"
-  valor1     Decimal?  // ← usado para "test ride"
+  valor      Decimal?  // usado só para "normal"
+  valor1     Decimal?  // usado para "test ride"
   valor2     Decimal?
   valor3     Decimal?
   limite     Int?
   categoria  String
   evento     Evento    @relation(fields: [eventoId], references: [id])
+  agendamentos Agendamento[]
+  motos      Moto[]   // ← nova relação
 }
-
-
 
 model Marca {
   id        Int        @id @default(autoincrement())
@@ -49,10 +48,12 @@ model Marca {
 model Moto {
   id           Int           @id @default(autoincrement())
   marcaId      Int
+  ingressoId   Int           // ← novo campo
   nome         String
   quantidade   Int
   categoria    String
   marca        Marca         @relation(fields: [marcaId], references: [id])
+  ingresso     Ingresso      @relation(fields: [ingressoId], references: [id]) // ← nova relação
   agendamentos Agendamento[]
 }
 
@@ -67,21 +68,11 @@ model Cliente {
   pedidos      Pedido[]
 }
 
-model Data {
-  id       Int       @id @default(autoincrement())
-  data     DateTime
-  eventoId Int
-  evento   Evento    @relation(fields: [eventoId], references: [id])
-  horarios Horario[]
-}
-
 model Horario {
   id           Int           @id @default(autoincrement())
   hora         String
   eventoId     Int
-  dataId       Int
   evento       Evento        @relation(fields: [eventoId], references: [id])
-  data         Data          @relation(fields: [dataId], references: [id])
   agendamentos Agendamento[]
 }
 
@@ -93,6 +84,7 @@ model Agendamento {
   data       DateTime
   horarioId  Int
   eventoId   Int
+  pedidoId   Int?     // ← novo campo opcional para vincular a pedidos
   codigo     String   @unique
   status     String   @default("pendente") // pago, pendente, cortesia, checkin
   checkin    Boolean  @default(false)
@@ -102,29 +94,34 @@ model Agendamento {
   moto     Moto     @relation(fields: [motoId], references: [id])
   horario  Horario  @relation(fields: [horarioId], references: [id])
   evento   Evento   @relation(fields: [eventoId], references: [id])
+  pedido   Pedido?  @relation(fields: [pedidoId], references: [id]) // ← nova relação
 }
 
 model Pedido {
-  id        Int      @id @default(autoincrement())
-  clienteId Int
-  eventoId  Int
-  valor     Decimal
-  status    String   @default("pendente") // pago, pendente, cancelado, abandonado
-  createdAt DateTime @default(now())
+  id                 Int      @id @default(autoincrement())
+  clienteId          Int
+  eventoId           Int
+  valor              Decimal
+  status             String   @default("pendente") // pago, pendente, cancelado, abandonado
+  createdAt          DateTime @default(now())
+  codigo             String   @unique // <-- novo campo para referência do pedido
+  metodoPagamento   String?
+  paymentIntentId    String?
 
-  cliente Cliente @relation(fields: [clienteId], references: [id])
-  evento  Evento  @relation(fields: [eventoId], references: [id])
+  cliente      Cliente       @relation(fields: [clienteId], references: [id])
+  evento       Evento        @relation(fields: [eventoId], references: [id])
+  agendamentos Agendamento[] // ← nova relação
 }
 
 model Cortesia {
   id        Int     @id @default(autoincrement())
   eventoId  Int
-  marcaId   Int
+  marcaId   Int?   // agora pode ser nulo
   codigo    String  @unique
   utilizado Boolean @default(false)
 
   evento Evento @relation(fields: [eventoId], references: [id])
-  marca  Marca  @relation(fields: [marcaId], references: [id])
+  marca  Marca? @relation(fields: [marcaId], references: [id])
 }
 
 model Admin {
@@ -135,4 +132,3 @@ model Admin {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-

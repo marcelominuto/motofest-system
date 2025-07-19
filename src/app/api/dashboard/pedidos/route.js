@@ -4,7 +4,21 @@ import prisma from "@/lib/prisma";
 // GET /api/dashboard/pedidos
 export async function GET() {
   try {
-    const total = await prisma.pedido.count();
+    const eventoAtivo = await prisma.evento.findFirst({
+      where: { ativo: true },
+    });
+
+    if (!eventoAtivo) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado" },
+        { status: 404 }
+      );
+    }
+
+    const total = await prisma.pedido.count({
+      where: { eventoId: eventoAtivo.id },
+    });
+
     return NextResponse.json({ total });
   } catch (error) {
     console.error("Erro ao contar pedidos:", error);

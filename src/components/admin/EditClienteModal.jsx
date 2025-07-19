@@ -133,7 +133,7 @@ export default function EditClienteModal({
         <div className="flex justify-end">
           <Button
             onClick={handleSubmit}
-            className="bg-blue-600 text-white hover:bg-blue-700"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             Salvar Alterações
           </Button>

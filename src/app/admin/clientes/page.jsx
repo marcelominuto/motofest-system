@@ -56,8 +56,8 @@ export default function ClientesPage() {
         return (
           <div className="flex gap-2">
             <Button
-              variant="ghost"
-              className="text-xs text-blue-600 hover:underline p-0"
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
               onClick={() => {
                 setClienteSelecionado(cliente);
                 setModalAberto(true);
@@ -77,7 +77,11 @@ export default function ClientesPage() {
       <CreateClienteModal onCreated={fetchClientes} />
       <h1 className="text-2xl font-bold mb-6">Clientes</h1>
 
-      <DataTable columns={columns} data={clientes} />
+      <DataTable
+        columns={columns}
+        data={clientes}
+        searchPlaceholder="Buscar por nome, CPF, CNH ou e-mail..."
+      />
 
       <EditClienteModal
         open={modalAberto}

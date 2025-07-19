@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 
 // PUT: update client
 export async function PUT(req, { params }) {
-  const { id } = params;
+  const { id } = await params;
   const { nome, email, cpf, cnh, telefone } = await req.json();
 
   if (!nome || !cpf) {
@@ -31,7 +31,7 @@ export async function PUT(req, { params }) {
 
 // DELETE: remove client
 export async function DELETE(_req, { params }) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     await prisma.cliente.delete({ where: { id: parseInt(id) } });

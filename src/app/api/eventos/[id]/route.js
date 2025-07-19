@@ -2,9 +2,8 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // PUT /api/eventos/[id]
-export async function PUT(req, context) {
-  const params = await context.params;
-  const id = params.id;
+export async function PUT(req, { params }) {
+  const { id } = await params;
 
   const body = await req.json();
   const { nome, dataInicio, dataFim, ativo } = body;
@@ -40,6 +39,25 @@ export async function PUT(req, context) {
     console.error("Erro ao atualizar evento:", error);
     return NextResponse.json(
       { error: "Erro ao atualizar evento", detalhes: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE /api/eventos/[id]
+export async function DELETE(_req, { params }) {
+  const { id } = await params;
+
+  try {
+    await prisma.evento.delete({
+      where: { id: parseInt(id) },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("DELETE /eventos/[id] error:", error);
+    return NextResponse.json(
+      { error: "Erro ao excluir evento" },
       { status: 500 }
     );
   }

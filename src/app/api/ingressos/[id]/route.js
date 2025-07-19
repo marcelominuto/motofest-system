@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getEventoAtivo } from "@/lib/getEventoAtivo";
 
 // PUT /api/ingressos/[id]
 export async function PUT(req, context) {
   const { id } = context.params;
   const body = await req.json();
-
   const { tipo, categoria, descricao, limite, valor, valor1, valor2, valor3 } =
     body;
 
@@ -17,6 +17,25 @@ export async function PUT(req, context) {
   }
 
   try {
+    const evento = await getEventoAtivo();
+    if (!evento) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado." },
+        { status: 404 }
+      );
+    }
+
+    const ingresso = await prisma.ingresso.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!ingresso || ingresso.eventoId !== evento.id) {
+      return NextResponse.json(
+        { error: "Este ingresso não pertence ao evento ativo." },
+        { status: 403 }
+      );
+    }
+
     const data = {
       tipo,
       categoria,
@@ -68,6 +87,25 @@ export async function DELETE(_req, context) {
   const { id } = context.params;
 
   try {
+    const evento = await getEventoAtivo();
+    if (!evento) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado." },
+        { status: 404 }
+      );
+    }
+
+    const ingresso = await prisma.ingresso.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!ingresso || ingresso.eventoId !== evento.id) {
+      return NextResponse.json(
+        { error: "Este ingresso não pertence ao evento ativo." },
+        { status: 403 }
+      );
+    }
+
     await prisma.ingresso.delete({
       where: { id: parseInt(id) },
     });
@@ -84,9 +122,7 @@ export async function DELETE(_req, context) {
       );
     }
 
-    // Se não for erro conhecido, loga
     console.error("DELETE /api/ingressos/[id] error:", error);
-
     return NextResponse.json(
       { error: "Erro interno ao excluir ingresso" },
       { status: 500 }

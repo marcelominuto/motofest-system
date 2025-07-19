@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
@@ -37,6 +38,7 @@ export default function AdminDashboardPage() {
         dias,
         modelos,
         horarios,
+        clientes,
       ] = await Promise.all([
         fetch("/api/dashboard/checkin").then((res) => res.json()),
         fetch("/api/dashboard/test-rides").then((res) => res.json()),
@@ -46,6 +48,7 @@ export default function AdminDashboardPage() {
         fetch("/api/dashboard/por-dia").then((res) => res.json()),
         fetch("/api/dashboard/por-modelo").then((res) => res.json()),
         fetch("/api/dashboard/por-horario").then((res) => res.json()),
+        fetch("/api/dashboard/clientes").then((res) => res.json()),
       ]);
 
       setDados({
@@ -53,7 +56,7 @@ export default function AdminDashboardPage() {
         checkins: checkins.total,
         pedidos: pedidos.total,
         motos: motos.total,
-        clientes: 112, // substitua futuramente por endpoint real
+        clientes: clientes.total,
       });
 
       setPorMarca(marcas);

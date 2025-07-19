@@ -1,23 +1,30 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getEventoAtivo } from "@/lib/getEventoAtivo";
 
-// GET: List all ticket types (Ingressos)
+// GET: List all ticket types for active event
 export async function GET() {
   try {
+    const evento = await getEventoAtivo();
+
+    if (!evento) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado." },
+        { status: 404 }
+      );
+    }
+
     const ingressos = await prisma.ingresso.findMany({
-      include: {
-        evento: true,
-      },
-      orderBy: {
-        tipo: "asc",
-      },
+      where: { eventoId: evento.id },
+      include: { evento: true },
+      orderBy: { tipo: "asc" },
     });
 
     return NextResponse.json(ingressos);
   } catch (error) {
     console.error("GET /api/ingressos error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch ticket types" },
+      { error: "Erro ao buscar ingressos" },
       { status: 500 }
     );
   }
@@ -26,8 +33,16 @@ export async function GET() {
 // POST: Create new ingresso
 export async function POST(req) {
   try {
+    const evento = await getEventoAtivo();
+
+    if (!evento) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado." },
+        { status: 404 }
+      );
+    }
+
     const {
-      eventoId,
       tipo,
       descricao,
       valor,
@@ -38,7 +53,7 @@ export async function POST(req) {
       categoria,
     } = await req.json();
 
-    if (!eventoId || !tipo || !categoria) {
+    if (!tipo || !categoria) {
       return NextResponse.json(
         { error: "Campos obrigatórios estão faltando." },
         { status: 400 }
@@ -46,7 +61,7 @@ export async function POST(req) {
     }
 
     const data = {
-      eventoId: parseInt(eventoId),
+      eventoId: evento.id,
       tipo,
       descricao: descricao || null,
       limite: limite ? parseInt(limite) : null,

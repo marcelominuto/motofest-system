@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getEventoAtivo } from "@/lib/getEventoAtivo";
 
-// GET: List all motorcycles with brand name
+// GET: List all motorcycles with brand name and ingresso
 export async function GET() {
   try {
     const motos = await prisma.moto.findMany({
-      include: { marca: true },
+      include: {
+        marca: true,
+        ingresso: true,
+      },
       orderBy: { nome: "asc" },
     });
     return NextResponse.json(motos);
@@ -21,14 +25,36 @@ export async function GET() {
 // POST: Create new motorcycle
 export async function POST(req) {
   try {
-    const { nome, marcaId, quantidade, categoria } = await req.json();
+    const { nome, marcaId, quantidade, categoria, ingressoId } =
+      await req.json();
 
-    if (!nome || !marcaId || !quantidade || !categoria) {
+    if (!nome || !marcaId || !quantidade || !categoria || !ingressoId) {
       return NextResponse.json(
         {
-          error: "All fields (name, brand ID, quantity, category) are required",
+          error:
+            "All fields (name, brand ID, quantity, category, ingresso ID) are required",
         },
         { status: 400 }
+      );
+    }
+
+    const evento = await getEventoAtivo();
+    if (!evento) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado." },
+        { status: 404 }
+      );
+    }
+
+    // Verificar se o ingresso existe
+    const ingresso = await prisma.ingresso.findUnique({
+      where: { id: parseInt(ingressoId) },
+    });
+
+    if (!ingresso) {
+      return NextResponse.json(
+        { error: "Ingresso não encontrado." },
+        { status: 404 }
       );
     }
 
@@ -36,8 +62,13 @@ export async function POST(req) {
       data: {
         nome,
         marcaId: parseInt(marcaId),
+        ingressoId: parseInt(ingressoId),
         quantidade: parseInt(quantidade),
         categoria,
+      },
+      include: {
+        marca: true,
+        ingresso: true,
       },
     });
 

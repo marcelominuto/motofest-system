@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getEventoAtivo } from "@/lib/getEventoAtivo";
 
 // PUT: Update brand by ID
 export async function PUT(req, { params }) {
-  const { id } = params;
+  const { id } = await params;
   const { nome } = await req.json();
 
   if (!nome) {
@@ -11,6 +12,14 @@ export async function PUT(req, { params }) {
   }
 
   try {
+    const evento = await getEventoAtivo();
+    if (!evento) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado." },
+        { status: 404 }
+      );
+    }
+
     const updated = await prisma.marca.update({
       where: { id: parseInt(id) },
       data: { nome },
@@ -28,9 +37,17 @@ export async function PUT(req, { params }) {
 
 // DELETE: Delete brand by ID
 export async function DELETE(_req, { params }) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
+    const evento = await getEventoAtivo();
+    if (!evento) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado." },
+        { status: 404 }
+      );
+    }
+
     await prisma.marca.delete({
       where: { id: parseInt(id) },
     });

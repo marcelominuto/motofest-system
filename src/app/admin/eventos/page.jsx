@@ -1,17 +1,71 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
+import { toast } from "sonner";
+import EditEventoModal from "@/components/admin/EditEventoModal";
+import DeleteEventoButton from "@/components/admin/DeleteEventoButton";
 
 export default function AdminEventosPage() {
   const [eventos, setEventos] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [editingEvento, setEditingEvento] = useState(null);
-  const [form, setForm] = useState({ nome: "", dataInicio: "", dataFim: "" });
+  const [form, setForm] = useState({
+    nome: "",
+    dataInicio: null,
+    dataFim: null,
+  });
+  const [loading, setLoading] = useState(false);
+  const [modalAberto, setModalAberto] = useState(false);
 
   const fetchEventos = async () => {
     const res = await fetch("/api/eventos");
     const data = await res.json();
     setEventos(data);
+  };
+
+  useEffect(() => {
+    fetchEventos();
+  }, []);
+
+  const handleCreate = async () => {
+    try {
+      const res = await fetch("/api/eventos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome: form.nome,
+          dataInicio: form.dataInicio?.toISOString(),
+          dataFim: form.dataFim?.toISOString(),
+        }),
+      });
+
+      if (!res.ok) throw new Error();
+
+      toast.success("Evento criado com sucesso!");
+      setForm({ nome: "", dataInicio: null, dataFim: null });
+      setModalAberto(false);
+      fetchEventos();
+    } catch {
+      toast.error("Erro ao criar evento");
+    }
   };
 
   const ativarEvento = async (id, eventoData) => {
@@ -20,145 +74,170 @@ export default function AdminEventosPage() {
       await fetch(`/api/eventos/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...eventoData,
-          ativo: true,
-        }),
+        body: JSON.stringify({ ...eventoData, ativo: true }),
       });
+      toast.success("Evento ativado");
       fetchEventos();
-    } catch (err) {
-      alert("Erro ao ativar evento");
+    } catch {
+      toast.error("Erro ao ativar evento");
     } finally {
       setLoading(false);
     }
   };
 
-  const openEditModal = (evento) => {
-    setEditingEvento(evento);
-    setForm({
-      nome: evento.nome,
-      dataInicio: evento.dataInicio.split("T")[0],
-      dataFim: evento.dataFim.split("T")[0],
-    });
-  };
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSave = async () => {
-    if (!editingEvento) return;
-    try {
-      await fetch(`/api/eventos/${editingEvento.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, ativo: editingEvento.ativo }),
-      });
-      setEditingEvento(null);
-      fetchEventos();
-    } catch (err) {
-      alert("Erro ao salvar");
-    }
-  };
-
-  useEffect(() => {
-    fetchEventos();
-  }, []);
+  const columns = [
+    {
+      accessorKey: "nome",
+      header: "Nome",
+    },
+    {
+      accessorKey: "dataInicio",
+      header: "Início",
+      cell: ({ row }) => row.original.dataInicio.split("T")[0],
+    },
+    {
+      accessorKey: "dataFim",
+      header: "Fim",
+      cell: ({ row }) => row.original.dataFim.split("T")[0],
+    },
+    {
+      accessorKey: "ativo",
+      header: "Status",
+      cell: ({ row }) =>
+        row.original.ativo ? (
+          <span className="text-green-600">Ativo</span>
+        ) : (
+          "Inativo"
+        ),
+    },
+    {
+      id: "acoes",
+      header: "Ações",
+      cell: ({ row }) => {
+        const evento = row.original;
+        return (
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() => setEditingEvento(evento)}
+            >
+              Editar
+            </Button>
+            {!evento.ativo && (
+              <Button
+                size="sm"
+                className="bg-green-600 text-white"
+                disabled={loading}
+                onClick={() => ativarEvento(evento.id, evento)}
+              >
+                Ativar
+              </Button>
+            )}
+            <DeleteEventoButton id={evento.id} onDeleted={fetchEventos} />
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Eventos</h1>
-      <table className="min-w-full border text-sm">
-        <thead className="bg-gray-100 dark:bg-neutral-800 text-black dark:text-white">
-          <tr className="bg-gray-100">
-            <th className="border p-2">Nome</th>
-            <th className="border p-2">Início</th>
-            <th className="border p-2">Fim</th>
-            <th className="border p-2">Status</th>
-            <th className="border p-2">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {eventos.map((evento) => (
-            <tr
-              key={evento.id}
-              className="bg-white dark:bg-neutral-900 text-black dark:text-white"
-            >
-              <td className="border p-2">{evento.nome}</td>
-              <td className="border p-2">{evento.dataInicio.split("T")[0]}</td>
-              <td className="border p-2">{evento.dataFim.split("T")[0]}</td>
-              <td className="border p-2">
-                {evento.ativo ? (
-                  <span className="text-green-600">Ativo</span>
-                ) : (
-                  "Inativo"
-                )}
-              </td>
-              <td className="border p-2 space-x-2">
-                <button
-                  onClick={() => openEditModal(evento)}
-                  className="px-2 py-1 bg-gray-200 dark:bg-neutral-700 dark:text-white rounded"
-                >
-                  Editar
-                </button>
-                {!evento.ativo && (
-                  <button
-                    onClick={() => ativarEvento(evento.id, evento)}
-                    disabled={loading}
-                    className="px-3 py-1 bg-black text-white rounded text-sm"
-                  >
-                    Ativar
-                  </button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Modal */}
-      {editingEvento && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow max-w-sm w-full">
-            <h2 className="text-lg font-semibold mb-4">Editar Evento</h2>
-            <input
-              name="nome"
+      <Dialog open={modalAberto} onOpenChange={setModalAberto}>
+        <DialogTrigger asChild>
+          <Button className="mb-4 bg-red-600 hover:bg-red-700">
+            + Novo Evento
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Criar Novo Evento</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Input
+              placeholder="Nome do evento"
               value={form.nome}
-              onChange={handleChange}
-              placeholder="Nome"
-              className="w-full mb-2 p-2 border rounded"
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, nome: e.target.value }))
+              }
             />
-            <input
-              type="date"
-              name="dataInicio"
-              value={form.dataInicio}
-              onChange={handleChange}
-              className="w-full mb-2 p-2 border rounded"
-            />
-            <input
-              type="date"
-              name="dataFim"
-              value={form.dataFim}
-              onChange={handleChange}
-              className="w-full mb-2 p-2 border rounded"
-            />
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                onClick={() => setEditingEvento(null)}
-                className="px-4 py-2 border rounded"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-4 py-2 bg-black text-white rounded"
-              >
-                Salvar
-              </button>
+            <div>
+              <label className="block text-sm mb-1">Data de Início</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    {form.dataInicio
+                      ? format(form.dataInicio, "dd/MM/yyyy")
+                      : "Selecionar..."}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="p-0">
+                  <Calendar
+                    mode="single"
+                    selected={form.dataInicio}
+                    onSelect={(date) =>
+                      setForm((prev) => ({ ...prev, dataInicio: date }))
+                    }
+                    locale={ptBR}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div>
+              <label className="block text-sm mb-1">Data de Fim</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    {form.dataFim
+                      ? format(form.dataFim, "dd/MM/yyyy")
+                      : "Selecionar..."}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="p-0">
+                  <Calendar
+                    mode="single"
+                    selected={form.dataFim}
+                    onSelect={(date) =>
+                      setForm((prev) => ({ ...prev, dataFim: date }))
+                    }
+                    locale={ptBR}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
-        </div>
-      )}
+          <div className="flex justify-end">
+            <Button
+              className="bg-green-600 text-white hover:bg-green-700"
+              onClick={handleCreate}
+            >
+              Criar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <h1 className="text-2xl font-bold mb-6">Eventos</h1>
+      <DataTable
+        columns={columns}
+        data={eventos}
+        searchPlaceholder="Buscar por nome do evento..."
+      />
+
+      <EditEventoModal
+        evento={editingEvento}
+        open={!!editingEvento}
+        onClose={() => setEditingEvento(null)}
+        onUpdated={fetchEventos}
+      />
     </div>
   );
 }

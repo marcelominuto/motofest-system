@@ -1,10 +1,22 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getEventoAtivo } from "@/lib/getEventoAtivo";
 
 // GET: List all brands
 export async function GET() {
   try {
-    const brands = await prisma.marca.findMany({ orderBy: { nome: "asc" } });
+    const evento = await getEventoAtivo();
+    if (!evento) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado." },
+        { status: 404 }
+      );
+    }
+
+    const brands = await prisma.marca.findMany({
+      orderBy: { nome: "asc" },
+    });
+
     return NextResponse.json(brands);
   } catch (error) {
     console.error("GET /marcas error:", error);
@@ -18,6 +30,14 @@ export async function GET() {
 // POST: Create new brand
 export async function POST(req) {
   try {
+    const evento = await getEventoAtivo();
+    if (!evento) {
+      return NextResponse.json(
+        { error: "Nenhum evento ativo encontrado." },
+        { status: 404 }
+      );
+    }
+
     const { nome } = await req.json();
 
     if (!nome) {

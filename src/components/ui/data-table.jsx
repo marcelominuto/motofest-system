@@ -20,7 +20,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function DataTable({ columns, data }) {
+export function DataTable({
+  columns,
+  data,
+  filters,
+  searchPlaceholder = "Buscar...",
+}) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
 
@@ -42,13 +47,14 @@ export function DataTable({ columns, data }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap gap-4 items-end mb-2">
         <Input
-          placeholder="Buscar por nome, CPF ou e-mail..."
+          placeholder={searchPlaceholder}
           value={globalFilter ?? ""}
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="w-64"
         />
+        {filters}
       </div>
 
       <div className="rounded-md border bg-white">

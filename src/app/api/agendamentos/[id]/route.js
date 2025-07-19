@@ -1,78 +1,80 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getEventoAtivo } from "@/lib/getEventoAtivo";
 
-// PUT: Update a booking by ID
-export async function PUT(req, { params }) {
-  const { id } = params;
-  const {
-    clienteId,
-    ingressoId,
-    motoId,
-    data,
-    horarioId,
-    eventoId,
-    status,
-    checkin,
-  } = await req.json();
+// PUT /api/agendamentos/[id]
+export async function PUT(req, context) {
+  const params = await context.params;
+  const { id } = await params;
+  const { clienteId, ingressoId, motoId, data, horarioId, status, checkin } =
+    await req.json();
 
-  if (
-    !clienteId ||
-    !ingressoId ||
-    !motoId ||
-    !data ||
-    !horarioId ||
-    !eventoId
-  ) {
+  const evento = await getEventoAtivo();
+  if (!evento) {
     return NextResponse.json(
-      { error: "All fields are required" },
+      { error: "Nenhum evento ativo encontrado" },
+      { status: 404 }
+    );
+  }
+
+  if (!clienteId || !ingressoId || !motoId || !data || !horarioId) {
+    return NextResponse.json(
+      { error: "Todos os campos obrigatórios devem ser preenchidos" },
       { status: 400 }
     );
   }
 
   try {
-    // Verifica duplicidade de agendamento do mesmo cliente
+    // Verifica se o cliente já tem agendamento neste horário e data
     const conflito = await prisma.agendamento.findFirst({
       where: {
         clienteId,
         data: new Date(data),
-        horarioId,
-        id: { not: parseInt(id) }, // ignora o atual
+        horarioId: parseInt(horarioId, 10),
+        eventoId: evento.id,
+        id: { not: parseInt(id) }, // Ignora o próprio agendamento
       },
     });
 
     if (conflito) {
       return NextResponse.json(
-        { error: "Client already has an appointment at this time" },
+        { error: "Este cliente já possui um agendamento neste horário e data" },
         { status: 409 }
       );
     }
 
-    // Verifica limite de motos para esse horário
+    // Verifica disponibilidade da moto nesse horário
     const totalAgendamentos = await prisma.agendamento.count({
       where: {
         motoId,
-        horarioId,
+        horarioId: parseInt(horarioId, 10),
         data: new Date(data),
-        id: { not: parseInt(id) },
+        eventoId: evento.id,
+        id: { not: parseInt(id) }, // Ignora o próprio agendamento
       },
     });
 
-    const moto = await prisma.moto.findUnique({ where: { id: motoId } });
+    const moto = await prisma.moto.findUnique({
+      where: { id: motoId },
+    });
 
     if (!moto) {
       return NextResponse.json(
-        { error: "Motorcycle not found" },
+        { error: "Moto não encontrada" },
         { status: 404 }
       );
     }
 
     if (totalAgendamentos >= moto.quantidade) {
       return NextResponse.json(
-        { error: "No more slots available for this motorcycle at this time" },
+        {
+          error: "Não há mais vagas disponíveis para esta moto neste horário",
+        },
         { status: 409 }
       );
     }
 
+    // Atualiza agendamento
     const updated = await prisma.agendamento.update({
       where: { id: parseInt(id) },
       data: {
@@ -80,8 +82,8 @@ export async function PUT(req, { params }) {
         ingressoId,
         motoId,
         data: new Date(data),
-        horarioId,
-        eventoId,
+        horarioId: parseInt(horarioId, 10),
+        eventoId: evento.id,
         status,
         checkin,
       },
@@ -91,15 +93,16 @@ export async function PUT(req, { params }) {
   } catch (error) {
     console.error("PUT /agendamentos/[id] error:", error);
     return NextResponse.json(
-      { error: "Failed to update booking" },
+      { error: "Erro ao atualizar agendamento" },
       { status: 500 }
     );
   }
 }
 
-// DELETE: Remove a booking
-export async function DELETE(_req, { params }) {
-  const { id } = params;
+// DELETE /api/agendamentos/[id]
+export async function DELETE(_req, context) {
+  const params = await context.params;
+  const { id } = await params;
 
   try {
     await prisma.agendamento.delete({
@@ -110,7 +113,7 @@ export async function DELETE(_req, { params }) {
   } catch (error) {
     console.error("DELETE /agendamentos/[id] error:", error);
     return NextResponse.json(
-      { error: "Failed to delete booking" },
+      { error: "Erro ao excluir agendamento" },
       { status: 500 }
     );
   }

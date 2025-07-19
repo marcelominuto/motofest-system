@@ -11,7 +11,7 @@ const navItems = [
   { label: "Ingressos", href: "/admin/ingressos" },
   { label: "Eventos", href: "/admin/eventos" },
   { label: "Marcas", href: "/admin/marcas" },
-  { label: "Modelos", href: "/admin/motos" },
+  { label: "Motos", href: "/admin/motos" },
   { label: "Horários", href: "/admin/horarios" },
   { label: "Cortesias", href: "/admin/cortesias" },
   { label: "Pedidos", href: "/admin/pedidos" },
