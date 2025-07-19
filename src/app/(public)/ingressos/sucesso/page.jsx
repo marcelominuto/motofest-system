@@ -1,9 +1,11 @@
-"use client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { CheckCircle } from "lucide-react";
+import { Suspense } from "react";
 
-export default function SucessoIngressoPage() {
+function SucessoIngressoPageContent() {
+  "use client";
+  import { useRouter, useSearchParams } from "next/navigation";
+  import { useEffect, useState } from "react";
+  import { CheckCircle } from "lucide-react";
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
@@ -55,13 +57,13 @@ export default function SucessoIngressoPage() {
 
   if (loading)
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-screen">
         Carregando...
       </div>
     );
   if (erro)
     return (
-      <div className="flex items-center justify-center min-h-[60vh] text-red-600">
+      <div className="flex items-center justify-center min-h-screen text-red-600">
         {erro}
       </div>
     );
@@ -110,8 +112,31 @@ export default function SucessoIngressoPage() {
               {pedido.agendamentos?.map((a) => (
                 <li key={a.id}>
                   {a.moto?.nome || "-"} ({a.moto?.marca?.nome || "-"}) -{" "}
-                  {a.data ? new Date(a.data).toLocaleDateString() : "-"} às{" "}
-                  {a.horario?.hora || "-"}
+                  {(() => {
+                    if (!a.data) return "-";
+                    if (typeof a.data === "string" && a.data.length === 10) {
+                      const [year, month, day] = a.data.split("-");
+                      return `${day}/${month}/${year}`;
+                    }
+                    if (typeof a.data === "string" && a.data.length > 10) {
+                      const [year, month, day] = a.data
+                        .split("T")[0]
+                        .split("-");
+                      return `${day}/${month}/${year}`;
+                    }
+                    const d = new Date(a.data);
+                    if (!isNaN(d)) {
+                      return `${String(d.getUTCDate()).padStart(
+                        2,
+                        "0"
+                      )}/${String(d.getUTCMonth() + 1).padStart(
+                        2,
+                        "0"
+                      )}/${d.getUTCFullYear()}`;
+                    }
+                    return "-";
+                  })()}{" "}
+                  às {a.horario?.hora || "-"}
                 </li>
               ))}
             </ul>
@@ -135,5 +160,13 @@ export default function SucessoIngressoPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <SucessoIngressoPageContent />
+    </Suspense>
   );
 }
