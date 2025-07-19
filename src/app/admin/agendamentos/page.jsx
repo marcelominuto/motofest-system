@@ -152,21 +152,25 @@ export default function AgendamentosPage() {
     {
       accessorKey: "cliente",
       header: "Cliente",
+      accessorFn: (row) => row.cliente?.nome || "",
       cell: ({ row }) => row.original.cliente?.nome || "-",
     },
     {
       accessorKey: "cpf",
       header: "CPF",
+      accessorFn: (row) => row.cliente?.cpf || "",
       cell: ({ row }) => row.original.cliente?.cpf || "-",
     },
     {
       accessorKey: "marca",
       header: "Marca",
+      accessorFn: (row) => row.moto?.marca?.nome || "",
       cell: ({ row }) => row.original.moto?.marca?.nome || "-",
     },
     {
       accessorKey: "moto",
       header: "Moto",
+      accessorFn: (row) => row.moto?.nome || "",
       cell: ({ row }) => row.original.moto?.nome || "-",
     },
     {

@@ -234,6 +234,12 @@ export default function DetalheIngressoPage() {
     const moto = motos.find((m) => m.id === Number(id));
     return moto ? moto.nome : id;
   };
+  const getMarcaNome = (id) => {
+    const moto = motos.find((m) => m.id === Number(id));
+    if (!moto) return "";
+    const marca = marcas.find((marca) => marca.id === moto.marcaId);
+    return marca ? marca.nome : "";
+  };
   const getHorarioLabel = (id) => {
     const horario = horarios.find((h) => h.id === Number(id));
     return horario ? horario.hora : id;
@@ -268,7 +274,7 @@ export default function DetalheIngressoPage() {
         .slice(0, formData.quantidadeMotos)
         .map((m) => ({
           ...m,
-          modelo: getMotoNome(m.motoId),
+          modelo: `${getMarcaNome(m.motoId)} ${getMotoNome(m.motoId)}`.trim(),
           horario: getHorarioLabel(m.horarioId),
         }));
       const response = await fetch("/api/stripe/checkout-session", {
@@ -278,6 +284,7 @@ export default function DetalheIngressoPage() {
           nome: formData.nome,
           email: formData.email,
           cpf: formData.cpf, // <-- Adicionado cpf
+          telefone: formData.telefone, // <-- Adicionado telefone
           valor,
           quantidade: formData.quantidadeMotos,
           ingressoId: ingresso.id,
@@ -480,7 +487,8 @@ export default function DetalheIngressoPage() {
                     CPF *
                   </label>
                   <input
-                    type="text"
+                    type="tel"
+                    inputMode="numeric"
                     required
                     value={formData.cpf}
                     onChange={(e) =>
@@ -511,7 +519,8 @@ export default function DetalheIngressoPage() {
                     Telefone (com DDD) *
                   </label>
                   <input
-                    type="text"
+                    type="tel"
+                    inputMode="numeric"
                     required
                     value={formData.telefone}
                     onChange={(e) =>

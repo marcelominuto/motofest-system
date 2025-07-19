@@ -24,6 +24,8 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
   const [clienteSelecionado, setClienteSelecionado] = useState(null);
   const [usarCortesia, setUsarCortesia] = useState(false);
   const [horariosIndisponiveis, setHorariosIndisponiveis] = useState({});
+  const [erroCortesia, setErroCortesia] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     ingressoId: "",
@@ -70,6 +72,7 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
       setClienteSelecionado(null);
       setUsarCortesia(false);
       setHorariosIndisponiveis({});
+      setErroCortesia("");
     }
   }, [open]);
 
@@ -106,19 +109,26 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
     if (
       !clienteSelecionado ||
       !form.ingressoId ||
-      form.agendamentos.length === 0
+      form.agendamentos.length === 0 ||
+      form.agendamentos.some(
+        (a) => !a.marcaId || !a.motoId || !a.data || !a.horarioId
+      )
     ) {
       toast.error("Preencha todos os campos obrigatórios");
       return;
     }
     if (usarCortesia && !form.cortesia.trim()) {
+      setErroCortesia("Preencha o código de cortesia");
       toast.error("Preencha o código de cortesia");
       return;
+    } else {
+      setErroCortesia("");
     }
-
+    setLoading(true);
     try {
       const res = await fetch("/api/agendamentos", {
         method: "POST",
@@ -134,17 +144,20 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
           checkin: form.checkin,
         }),
       });
-
       if (!res.ok) {
         const err = await res.json();
+        if (err.error && err.error.toLowerCase().includes("cortesia")) {
+          setErroCortesia(err.error);
+        }
         throw new Error(err.error || "Erro ao criar agendamento");
       }
-
       toast.success("Agendamento criado com sucesso!");
       onClose();
       onCreated();
     } catch (error) {
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -152,14 +165,22 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-[800px] !max-w-[800px] max-h-[95vh] overflow-y-auto bg-white border border-gray-200 shadow-xl rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold mb-2">
+          <DialogTitle className="text-2xl font-bold mb-6 text-center">
             Novo Agendamento
           </DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-8 py-4">
-          {/* Cliente */}
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Cliente</h3>
+        <form
+          className="flex flex-col gap-8 py-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
+          {/* Bloco Cliente */}
+          <div className="bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-6 flex flex-col gap-3">
+            <h3 className="text-lg font-bold mb-2 text-blue-700">
+              Cliente <span className="text-red-500">*</span>
+            </h3>
             <Label className="mb-1 text-base">
               Buscar Cliente (nome ou CPF)
             </Label>
@@ -220,10 +241,11 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
               </div>
             )}
           </div>
-          <hr className="my-2 border-gray-200" />
-          {/* Ingresso */}
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Ingresso</h3>
+          {/* Bloco Ingresso */}
+          <div className="bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-6 flex flex-col gap-3">
+            <h3 className="text-lg font-bold mb-2 text-blue-700">
+              Ingresso <span className="text-red-500">*</span>
+            </h3>
             <Label className="mb-1 text-base">Ingresso</Label>
             <select
               className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive mb-2"
@@ -231,6 +253,7 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
               onChange={(e) =>
                 setForm((prev) => ({ ...prev, ingressoId: e.target.value }))
               }
+              required
             >
               <option value="">Selecione um ingresso</option>
               {ingressos.map((i) => (
@@ -248,31 +271,42 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
             </div>
             {usarCortesia && (
               <div className="mt-2">
-                <Label className="mb-1 text-base">Código de Cortesia</Label>
+                <Label className="mb-1 text-base">
+                  Código de Cortesia <span className="text-red-500">*</span>
+                </Label>
                 <Input
-                  className="h-10 text-base"
+                  className={`h-10 text-base ${
+                    erroCortesia ? "border-red-500" : ""
+                  }`}
                   value={form.cortesia}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, cortesia: e.target.value }))
-                  }
+                  onChange={(e) => {
+                    setForm((prev) => ({ ...prev, cortesia: e.target.value }));
+                    setErroCortesia("");
+                  }}
                 />
+                {erroCortesia && (
+                  <div className="text-red-500 text-sm mt-1">
+                    {erroCortesia}
+                  </div>
+                )}
               </div>
             )}
           </div>
-          <hr className="my-2 border-gray-200" />
-          {/* Motos */}
-          <div>
+          {/* Bloco Motos */}
+          <div className="bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-6 flex flex-col gap-3">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold">Motos Selecionadas</h3>
-              {form.agendamentos.length < 3 && (
-                <Button
-                  size="sm"
-                  onClick={addMoto}
-                  className="h-9 px-4 text-base bg-blue-600 text-white hover:bg-blue-700"
-                >
-                  + Adicionar Moto
-                </Button>
-              )}
+              <h3 className="text-lg font-bold text-blue-700">
+                Motos Selecionadas <span className="text-red-500">*</span>
+              </h3>
+              <Button
+                size="sm"
+                onClick={addMoto}
+                className="h-9 px-4 text-base bg-blue-600 text-white hover:bg-blue-700"
+                type="button"
+                disabled={form.agendamentos.length >= 3}
+              >
+                + Adicionar Moto
+              </Button>
             </div>
             <div className="flex flex-col gap-5">
               {form.agendamentos.map((a, idx) => {
@@ -289,15 +323,11 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
                 const motosFiltradas = a.marcaId
                   ? motos.filter((m) => m.marcaId === parseInt(a.marcaId))
                   : [];
-
-                // Buscar horários indisponíveis para esta moto nesta data
                 const chaveIndisponiveis =
                   a.motoId && a.data ? `${a.motoId}-${a.data}` : null;
                 const horariosIndisponiveisMoto = chaveIndisponiveis
                   ? horariosIndisponiveis[chaveIndisponiveis] || []
                   : [];
-
-                // Combina horários ocupados por outros agendamentos + horários indisponíveis da moto
                 const horariosDesabilitados = [
                   ...new Set([
                     ...horariosOcupados,
@@ -307,7 +337,7 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
                 return (
                   <div
                     key={idx}
-                    className="relative bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
+                    className="relative bg-white border border-gray-300 rounded-xl shadow p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
                   >
                     <button
                       type="button"
@@ -324,7 +354,9 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
                       ×
                     </button>
                     <div>
-                      <Label className="mb-1 text-base">Marca</Label>
+                      <Label className="mb-1 text-base">
+                        Marca <span className="text-red-500">*</span>
+                      </Label>
                       <select
                         className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
                         value={a.marcaId}
@@ -337,19 +369,26 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
                             return { ...prev, agendamentos: ags };
                           });
                         }}
+                        required
                       >
                         <option value="">Selecione</option>
-                        {[...new Set(motos.map((m) => m.marca))]
-                          .filter(Boolean)
-                          .map((marca) => (
-                            <option key={marca.id} value={marca.id}>
-                              {marca.nome}
-                            </option>
-                          ))}
+                        {Array.from(
+                          new Map(
+                            motos
+                              .filter((m) => m.marca && m.marca.id)
+                              .map((m) => [m.marca.id, m.marca])
+                          ).values()
+                        ).map((marca) => (
+                          <option key={marca.id} value={marca.id}>
+                            {marca.nome}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div>
-                      <Label className="mb-1 text-base">Moto</Label>
+                      <Label className="mb-1 text-base">
+                        Moto <span className="text-red-500">*</span>
+                      </Label>
                       <select
                         className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
                         value={a.motoId}
@@ -360,12 +399,11 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
                             ags[idx].motoId = val;
                             return { ...prev, agendamentos: ags };
                           });
-
-                          // Buscar horários indisponíveis quando uma moto é selecionada
                           if (val && a.data) {
                             buscarHorariosIndisponiveis(val, a.data);
                           }
                         }}
+                        required
                       >
                         <option value="">Selecione</option>
                         {motosFiltradas.map((m) => (
@@ -376,7 +414,9 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
                       </select>
                     </div>
                     <div>
-                      <Label className="mb-1 text-base">Data</Label>
+                      <Label className="mb-1 text-base">
+                        Data <span className="text-red-500">*</span>
+                      </Label>
                       <select
                         className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
                         value={a.data}
@@ -388,12 +428,11 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
                             ags[idx].horarioId = "";
                             return { ...prev, agendamentos: ags };
                           });
-
-                          // Buscar horários indisponíveis quando uma data é selecionada
                           if (val && a.motoId) {
                             buscarHorariosIndisponiveis(a.motoId, val);
                           }
                         }}
+                        required
                       >
                         <option value="">Selecione</option>
                         {datas.map((d) => {
@@ -408,7 +447,9 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
                       </select>
                     </div>
                     <div>
-                      <Label className="mb-1 text-base">Horário</Label>
+                      <Label className="mb-1 text-base">
+                        Horário <span className="text-red-500">*</span>
+                      </Label>
                       <select
                         className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
                         value={a.horarioId}
@@ -421,6 +462,7 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
                           });
                         }}
                         disabled={!a.data}
+                        required
                       >
                         <option value="">Selecione</option>
                         {horarios.map((h) => {
@@ -430,7 +472,6 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
                           const isDesabilitado = horariosDesabilitados.includes(
                             h.id
                           );
-
                           return (
                             <option
                               key={h.id}
@@ -452,9 +493,8 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
               })}
             </div>
           </div>
-          <hr className="my-2 border-gray-200" />
-          {/* Check-in */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-center gap-3 mt-2">
+          {/* Check-in automático */}
+          <div className="bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-4 flex items-center gap-3">
             <input
               type="checkbox"
               id="checkin-create"
@@ -485,29 +525,76 @@ export default function CreateAgendamentoModal({ open, onClose, onCreated }) {
               Fazer check-in automaticamente neste agendamento
             </Label>
           </div>
+          {/* Resumo do agendamento */}
+          <div className="bg-gray-100 border border-gray-200 rounded-xl shadow-sm p-6 flex flex-col gap-2">
+            <h3 className="text-lg font-bold mb-2 text-blue-700">
+              Resumo do Agendamento
+            </h3>
+            <div>
+              <b>Cliente:</b>{" "}
+              {clienteSelecionado ? (
+                clienteSelecionado.nome
+              ) : (
+                <span className="text-red-500">Não selecionado</span>
+              )}
+            </div>
+            <div>
+              <b>Ingresso:</b>{" "}
+              {ingressos.find((i) => i.id == form.ingressoId)?.tipo || (
+                <span className="text-red-500">Não selecionado</span>
+              )}
+            </div>
+            <div>
+              <b>Motos:</b>{" "}
+              {form.agendamentos.length === 0 ? (
+                <span className="text-red-500">Nenhuma selecionada</span>
+              ) : (
+                form.agendamentos.map((a, idx) => {
+                  const moto = motos.find((m) => m.id == a.motoId);
+                  const marca = moto?.marca?.nome;
+                  // Formatar data para dd/mm/yyyy
+                  let dataFormatada = "";
+                  if (a.data && /^\d{4}-\d{2}-\d{2}$/.test(a.data)) {
+                    const [y, m, d] = a.data.split("-");
+                    dataFormatada = `${d}/${m}/${y}`;
+                  }
+                  return (
+                    <div key={idx} className="ml-2">
+                      {marca ? marca + " - " : ""}
+                      {moto ? moto.nome : ""}{" "}
+                      {dataFormatada ? `em ${dataFormatada}` : ""}{" "}
+                      {a.horarioId
+                        ? `às ${
+                            horarios.find((h) => h.id == a.horarioId)?.hora
+                          }`
+                        : ""}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+          {/* Botão de salvar */}
           <div className="flex justify-end pt-8">
             <Button
               onClick={handleSubmit}
               className="bg-green-600 hover:bg-green-700 text-white h-14 text-xl px-12 rounded-2xl shadow-lg flex items-center gap-3 font-bold"
+              type="submit"
+              disabled={
+                loading ||
+                !clienteSelecionado ||
+                !form.ingressoId ||
+                form.agendamentos.length === 0 ||
+                form.agendamentos.some(
+                  (a) => !a.marcaId || !a.motoId || !a.data || !a.horarioId
+                ) ||
+                (usarCortesia && !form.cortesia.trim())
+              }
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 12.75l6 6 9-13.5"
-                />
-              </svg>
-              Agendar
+              {loading ? "Agendando..." : "Agendar"}
             </Button>
           </div>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

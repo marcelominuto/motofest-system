@@ -27,6 +27,7 @@ export async function POST(req) {
     descricao,
     detalhesAgendamento,
     agendamento,
+    telefone, // <-- Adicionado telefone
   } = body;
 
   console.log("Body recebido na criação de sessão Stripe:", body); // Log para depuração
@@ -86,6 +87,7 @@ export async function POST(req) {
         nome,
         email,
         cpf, // <-- Adicionado cpf ao metadata
+        telefone, // <-- Adicionado telefone ao metadata
         detalhesAgendamento: detalhesAgendamento || "",
         agendamento: agendamento ? JSON.stringify(agendamento) : "",
       },

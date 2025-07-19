@@ -179,10 +179,12 @@ export default function AdminEventosPage() {
                   <Calendar
                     mode="single"
                     selected={form.dataInicio}
-                    onSelect={(date) =>
-                      setForm((prev) => ({ ...prev, dataInicio: date }))
-                    }
+                    onSelect={(date) => {
+                      console.log("Selecionou dataInicio:", date);
+                      setForm((prev) => ({ ...prev, dataInicio: date }));
+                    }}
                     locale={ptBR}
+                    disabled={undefined}
                   />
                 </PopoverContent>
               </Popover>
@@ -205,10 +207,12 @@ export default function AdminEventosPage() {
                   <Calendar
                     mode="single"
                     selected={form.dataFim}
-                    onSelect={(date) =>
-                      setForm((prev) => ({ ...prev, dataFim: date }))
-                    }
+                    onSelect={(date) => {
+                      console.log("Selecionou dataFim:", date);
+                      setForm((prev) => ({ ...prev, dataFim: date }));
+                    }}
                     locale={ptBR}
+                    disabled={undefined}
                   />
                 </PopoverContent>
               </Popover>

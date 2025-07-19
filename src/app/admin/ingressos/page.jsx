@@ -56,17 +56,22 @@ export default function IngressosPage() {
                 </td>
                 <td className="border p-2">{i.limite ?? "∞"}</td>
                 <td className="border p-2">
-                  <Button
-                    size="sm"
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                    onClick={() => {
-                      setIngressoSelecionado(i);
-                      setModalAberto(true);
-                    }}
-                  >
-                    Editar
-                  </Button>
-                  <DeleteIngressoButton id={i.id} onDeleted={fetchIngressos} />
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => {
+                        setIngressoSelecionado(i);
+                        setModalAberto(true);
+                      }}
+                    >
+                      Editar
+                    </Button>
+                    <DeleteIngressoButton
+                      id={i.id}
+                      onDeleted={fetchIngressos}
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

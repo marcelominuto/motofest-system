@@ -72,6 +72,7 @@ export default function PedidosPage() {
       {
         accessorKey: "cliente",
         header: "Cliente",
+        accessorFn: (row) => row.cliente?.nome || "",
         cell: ({ row }) => row.original.cliente?.nome || "-",
       },
       {
@@ -126,57 +127,19 @@ export default function PedidosPage() {
             >
               Visualizar
             </Button>
-            <Dialog
-              open={pedidoParaCancelar?.id === row.original.id}
-              onOpenChange={(open) => {
-                if (open)
-                  console.log("Abrindo modal para cancelar", row.original.id);
-                setPedidoParaCancelar(open ? row.original : null);
-              }}
+            <Button
+              size="sm"
+              variant="destructive"
+              disabled={row.original.status === "cancelado"}
+              onClick={() => setPedidoParaCancelar(row.original)}
             >
-              {row.original.status !== "cancelado" && (
-                <DialogTrigger asChild>
-                  <Button size="sm" variant="destructive">
-                    Cancelar
-                  </Button>
-                </DialogTrigger>
-              )}
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Cancelar pedido</DialogTitle>
-                </DialogHeader>
-                <div className="mb-4">
-                  Tem certeza que deseja cancelar este pedido? Todos os
-                  agendamentos vinculados serão excluídos, mas o pedido
-                  permanecerá com status <b>cancelado</b>.
-                </div>
-                <div className="flex gap-2 justify-end">
-                  <Button
-                    variant="outline"
-                    onClick={() => setPedidoParaCancelar(null)}
-                  >
-                    Não cancelar
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => {
-                      console.log(
-                        "Cliquei no botão de cancelar do modal",
-                        row.original.id
-                      );
-                      handleCancelar(row.original.id);
-                    }}
-                  >
-                    Cancelar pedido
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+              Cancelar
+            </Button>
           </div>
         ),
       },
     ],
-    []
+    [router]
   );
 
   return (
@@ -193,6 +156,37 @@ export default function PedidosPage() {
           searchPlaceholder="Buscar por cliente ou código..."
         />
       )}
+      <Dialog
+        open={!!pedidoParaCancelar}
+        onOpenChange={(open) => {
+          if (!open) setPedidoParaCancelar(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cancelar pedido</DialogTitle>
+          </DialogHeader>
+          <div className="mb-4">
+            Tem certeza que deseja cancelar este pedido? Todos os agendamentos
+            vinculados serão excluídos, mas o pedido permanecerá com status{" "}
+            <b>cancelado</b>.
+          </div>
+          <div className="flex gap-2 justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setPedidoParaCancelar(null)}
+            >
+              Não cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleCancelar(pedidoParaCancelar.id)}
+            >
+              Cancelar pedido
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

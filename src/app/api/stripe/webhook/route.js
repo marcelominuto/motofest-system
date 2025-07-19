@@ -71,11 +71,13 @@ export async function POST(req) {
     // Se encontrou cliente por CPF, sempre usa os dados do banco (ignora nome/email do input)
     // Só cria cliente se CPF não for vazio e não existir ainda
     if (!cliente && cpf) {
+      const clienteTelefone = metadata.telefone || "";
       cliente = await prisma.cliente.create({
         data: {
           nome: clienteNome || "Cliente Stripe",
           email: clienteEmail,
           cpf: cpf,
+          telefone: clienteTelefone,
           cnh: "",
         },
       });
@@ -235,18 +237,24 @@ export async function POST(req) {
       paymentIntentId,
       metodoPagamento,
     });
-    try {
-      const result = await prisma.pedido.updateMany({
-        where: { paymentIntentId },
-        data: { metodoPagamento },
-      });
-      console.log("Pedidos atualizados (charge.succeeded):", result);
-    } catch (e) {
-      console.error(
-        "Erro ao atualizar metodoPagamento no charge.succeeded:",
-        e
-      );
+    let updated = null;
+    for (let i = 0; i < 3; i++) {
+      try {
+        updated = await prisma.pedido.updateMany({
+          where: { paymentIntentId },
+          data: { metodoPagamento },
+        });
+        if (updated.count > 0) break;
+      } catch (e) {
+        console.error(
+          "Erro ao atualizar metodoPagamento no charge.succeeded:",
+          e
+        );
+      }
+      // Aguarda 2 segundos antes de tentar novamente
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
+    console.log("Pedidos atualizados (charge.succeeded):", updated);
   }
 
   return NextResponse.json({ received: true });

@@ -14,7 +14,7 @@ export default function PublicLayout({ children }) {
   ];
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-black text-white p-4 flex items-center w-full justify-between md:justify-center md:items-center">
+      <header className="relative bg-black text-white p-4 flex items-center w-full justify-between md:justify-center md:items-center">
         {/* Mobile: logo à esquerda, menu à direita */}
         <Link href="/" className="flex items-center justify-center md:hidden">
           <img src="/logo-smf.png" alt="MotoFest" className="h-10 w-auto" />
@@ -64,7 +64,7 @@ export default function PublicLayout({ children }) {
         </div>
         {/* Menu mobile: dropdown ocupa toda a largura, altura do conteúdo */}
         {menuOpen && (
-          <div className="absolute left-0 top-full w-screen bg-black border-b border-gray-800 shadow-lg z-40 animate-fade-in-down">
+          <div className="absolute left-0 top-full w-screen bg-[#222] border-b border-gray-800 shadow-lg z-40 animate-fade-in-down">
             <nav className="flex flex-col items-center gap-4 py-4">
               <Link
                 href="/ingressos"
