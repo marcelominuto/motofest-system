@@ -1,10 +1,9 @@
-import { Suspense } from "react";
+"use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CheckCircle } from "lucide-react";
 
-function SucessoIngressoPageContent() {
-  "use client";
+export default function SucessoIngressoPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
@@ -159,13 +158,5 @@ function SucessoIngressoPageContent() {
         </button>
       </div>
     </div>
-  );
-}
-
-export default function Page() {
-  return (
-    <Suspense fallback={<div>Carregando...</div>}>
-      <SucessoIngressoPageContent />
-    </Suspense>
   );
 }
