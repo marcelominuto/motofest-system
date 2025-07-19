@@ -98,6 +98,10 @@ export async function POST(req) {
           session.payment_intent,
           { expand: ["charges"] }
         );
+        console.log(
+          "PaymentIntent completo:",
+          JSON.stringify(paymentIntent, null, 2)
+        );
         metodoPagamento =
           paymentIntent.charges?.data?.[0]?.payment_method_details?.type ||
           null;
@@ -167,27 +171,44 @@ export async function POST(req) {
       });
       // Fora da transação: retry para buscar e atualizar o método de pagamento
       if (session.payment_intent && resultado && resultado.pedido) {
+        console.log("Iniciando retry para buscar método de pagamento...");
         let metodoPagamentoFinal = null;
-        for (let i = 0; i < 3; i++) {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          const paymentIntent = await stripe.paymentIntents.retrieve(
-            session.payment_intent,
-            { expand: ["charges"] }
-          );
-          metodoPagamentoFinal =
-            paymentIntent.charges?.data?.[0]?.payment_method_details?.type ||
-            null;
-          if (metodoPagamentoFinal) {
-            await prisma.pedido.update({
-              where: { id: resultado.pedido.id },
-              data: { metodoPagamento: metodoPagamentoFinal },
-            });
+        for (let i = 0; i < 5; i++) {
+          console.log(`Tentativa ${i + 1} de buscar método de pagamento...`);
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+          try {
+            const paymentIntent = await stripe.paymentIntents.retrieve(
+              session.payment_intent,
+              { expand: ["charges"] }
+            );
             console.log(
-              "Método de pagamento atualizado após retry:",
+              `PaymentIntent na tentativa ${i + 1}:`,
+              JSON.stringify(paymentIntent, null, 2)
+            );
+            metodoPagamentoFinal =
+              paymentIntent.charges?.data?.[0]?.payment_method_details?.type ||
+              null;
+            console.log(
+              `Método encontrado na tentativa ${i + 1}:`,
               metodoPagamentoFinal
             );
-            break;
+            if (metodoPagamentoFinal) {
+              await prisma.pedido.update({
+                where: { id: resultado.pedido.id },
+                data: { metodoPagamento: metodoPagamentoFinal },
+              });
+              console.log(
+                "Método de pagamento atualizado após retry:",
+                metodoPagamentoFinal
+              );
+              break;
+            }
+          } catch (e) {
+            console.error(`Erro na tentativa ${i + 1}:`, e);
           }
+        }
+        if (!metodoPagamentoFinal) {
+          console.log("Método de pagamento não encontrado após 5 tentativas");
         }
       }
       console.log(
@@ -208,19 +229,21 @@ export async function POST(req) {
 
   // Novo: atualizar metodoPagamento quando o pagamento for realmente confirmado
   if (event.type === "payment_intent.succeeded") {
+    console.log("=== WEBHOOK payment_intent.succeeded ===");
     const paymentIntent = event.data.object;
     const metodoPagamento =
       paymentIntent.charges?.data?.[0]?.payment_method_details?.type || null;
     console.log("Webhook payment_intent.succeeded:", {
       paymentIntentId: paymentIntent.id,
       metodoPagamento,
+      charges: paymentIntent.charges?.data?.length || 0,
     });
     try {
       const result = await prisma.pedido.updateMany({
         where: { paymentIntentId: paymentIntent.id },
         data: { metodoPagamento },
       });
-      console.log("Pedidos atualizados:", result);
+      console.log("Pedidos atualizados via payment_intent.succeeded:", result);
     } catch (e) {
       console.error(
         "Erro ao atualizar metodoPagamento no payment_intent.succeeded:",
@@ -230,12 +253,14 @@ export async function POST(req) {
   }
 
   if (event.type === "charge.succeeded") {
+    console.log("=== WEBHOOK charge.succeeded ===");
     const charge = event.data.object;
     const metodoPagamento = charge.payment_method_details?.type || null;
     const paymentIntentId = charge.payment_intent;
     console.log("Webhook charge.succeeded:", {
       paymentIntentId,
       metodoPagamento,
+      chargeId: charge.id,
     });
     let updated = null;
     for (let i = 0; i < 3; i++) {
@@ -244,7 +269,10 @@ export async function POST(req) {
           where: { paymentIntentId },
           data: { metodoPagamento },
         });
-        if (updated.count > 0) break;
+        if (updated.count > 0) {
+          console.log("Pedidos atualizados via charge.succeeded:", updated);
+          break;
+        }
       } catch (e) {
         console.error(
           "Erro ao atualizar metodoPagamento no charge.succeeded:",
@@ -254,7 +282,11 @@ export async function POST(req) {
       // Aguarda 2 segundos antes de tentar novamente
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
-    console.log("Pedidos atualizados (charge.succeeded):", updated);
+    if (!updated || updated.count === 0) {
+      console.log(
+        "Nenhum pedido encontrado para atualizar via charge.succeeded"
+      );
+    }
   }
 
   return NextResponse.json({ received: true });
