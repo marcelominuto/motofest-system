@@ -1,11 +1,10 @@
 import { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { CheckCircle } from "lucide-react";
 
 function SucessoIngressoPageContent() {
   "use client";
-  import { useRouter, useSearchParams } from "next/navigation";
-  import { useEffect, useState } from "react";
-  import { CheckCircle } from "lucide-react";
-
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
