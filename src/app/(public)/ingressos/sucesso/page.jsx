@@ -67,6 +67,10 @@ function SucessoIngressoPageContent() {
       </div>
     );
 
+  if (pedido) {
+    console.log("Agendamentos do pedido:", pedido.agendamentos);
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-neutral-900">
       <div className="bg-neutral-800 rounded-xl shadow p-6 mb-6 w-full max-w-xl border border-neutral-700 flex flex-col items-center">
@@ -111,30 +115,14 @@ function SucessoIngressoPageContent() {
               {pedido.agendamentos?.map((a) => (
                 <li key={a.id}>
                   {a.moto?.nome || "-"} ({a.moto?.marca?.nome || "-"}) -{" "}
-                  {(() => {
-                    if (!a.data) return "-";
-                    if (typeof a.data === "string" && a.data.length === 10) {
-                      const [year, month, day] = a.data.split("-");
-                      return `${day}/${month}/${year}`;
-                    }
-                    if (typeof a.data === "string" && a.data.length > 10) {
-                      const [year, month, day] = a.data
-                        .split("T")[0]
-                        .split("-");
-                      return `${day}/${month}/${year}`;
-                    }
-                    const d = new Date(a.data);
-                    if (!isNaN(d)) {
-                      return `${String(d.getUTCDate()).padStart(
-                        2,
-                        "0"
-                      )}/${String(d.getUTCMonth() + 1).padStart(
-                        2,
-                        "0"
-                      )}/${d.getUTCFullYear()}`;
-                    }
-                    return "-";
-                  })()}{" "}
+                  {a.data
+                    ? (() => {
+                        const [year, month, day] = a.data
+                          .split("T")[0]
+                          .split("-");
+                        return `${day}/${month}/${year}`;
+                      })()
+                    : "-"}{" "}
                   às {a.horario?.hora || "-"}
                 </li>
               ))}

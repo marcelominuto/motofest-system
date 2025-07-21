@@ -262,11 +262,78 @@ export default function DetalheIngressoPage() {
         .slice(0, formData.quantidadeMotos)
         .map(
           (m, idx) =>
-            `Moto ${idx + 1}: ${getMotoNome(m.motoId)}, Data: ${
-              m.data
-            }, Horário: ${getHorarioLabel(m.horarioId)}`
+            `Moto ${idx + 1}: ${getMotoNome(m.motoId)}, Data: ` +
+            (m.data && m.data.length === 10
+              ? (() => {
+                  const [year, month, day] = m.data.split("-");
+                  return `${day}/${month}/${year}`;
+                })()
+              : m.data) +
+            `, Horário: ${getHorarioLabel(m.horarioId)}`
         )
         .join(" | ");
+
+      // ENVIAR WEBHOOK PARA DISCORD
+      const motosString = formData.motos
+        .slice(0, formData.quantidadeMotos)
+        .map((m, idx) => {
+          const marca = getMarcaNome(m.motoId);
+          const modelo = getMotoNome(m.motoId);
+          const data =
+            m.data && m.data.length === 10
+              ? (() => {
+                  const [year, month, day] = m.data.split("-");
+                  return `${day}/${month}/${year}`;
+                })()
+              : m.data;
+          const horario = getHorarioLabel(m.horarioId);
+          return `${marca} ${modelo} - ${data} - ${horario}`;
+        })
+        .join("\n");
+      const discordPayload = {
+        content: "",
+        tts: false,
+        embeds: [
+          {
+            title: "COMPRA INICIADA!",
+            color: 1618943,
+            timestamp: new Date().toISOString(),
+            fields: [
+              {
+                id: 477098321,
+                name: "Nome",
+                value: formData.nome,
+                inline: true,
+              },
+              { id: 531816709, name: "CPF", value: formData.cpf },
+              { id: 980485366, name: "E-mail", value: formData.email },
+              {
+                id: 104269543,
+                name: "Telefone",
+                value: `${formData.telefone}\n[Whatsapp](<https://wa.me/${formData.telefone.replace(/\D/g, "")}>)`,
+              },
+              { id: 979321908, name: "Motos", value: motosString },
+            ],
+          },
+        ],
+        components: [],
+        actions: {},
+        flags: 0,
+        username: "SALÃO MOTO FEST",
+        avatar_url: "https://i.ibb.co/YBC3HZtG/LOGO.png",
+      };
+      if (process.env.DISCORD_WEBHOOK_URL) {
+        try {
+          await fetch(process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(discordPayload),
+          });
+        } catch (err) {
+          // Não bloqueia o fluxo se o Discord falhar
+          console.error("Erro ao enviar webhook para Discord:", err);
+        }
+      }
 
       // 2. Criar sessão de checkout Stripe
       const valor = calcularValor();
@@ -274,6 +341,12 @@ export default function DetalheIngressoPage() {
         .slice(0, formData.quantidadeMotos)
         .map((m) => ({
           ...m,
+          data:
+            typeof m.data === "string" && m.data.length === 10
+              ? m.data
+              : m.data
+                ? m.data.split("T")[0]
+                : "",
           modelo: `${getMarcaNome(m.motoId)} ${getMotoNome(m.motoId)}`.trim(),
           horario: getHorarioLabel(m.horarioId),
         }));

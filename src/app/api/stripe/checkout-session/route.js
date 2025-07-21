@@ -7,11 +7,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 function formatarDataBR(dataISO) {
   if (!dataISO) return "";
-  const d = new Date(dataISO);
-  const dia = String(d.getDate()).padStart(2, "0");
-  const mes = String(d.getMonth() + 1).padStart(2, "0");
-  const ano = String(d.getFullYear()).slice(-2);
-  return `${dia}/${mes}/${ano}`;
+  // Se vier no formato YYYY-MM-DD ou YYYY-MM-DDTHH:mm:ss
+  const [datePart] = dataISO.split("T");
+  const [year, month, day] = datePart.split("-");
+  return `${day}/${month}/${year}`;
 }
 
 export async function POST(req) {

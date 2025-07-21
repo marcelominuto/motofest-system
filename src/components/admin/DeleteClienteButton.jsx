@@ -37,11 +37,7 @@ export default function DeleteClienteButton({ id, onDeleted }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button
-          size="sm"
-          onClick={handleDelete}
-          className="bg-red-600 hover:bg-red-700 text-white"
-        >
+        <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white">
           Excluir
         </Button>
       </AlertDialogTrigger>
