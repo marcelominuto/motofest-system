@@ -33,6 +33,7 @@ model Ingresso {
   valor3     Decimal?
   limite     Int?
   categoria  String
+  link       String? // link para ingresso normal
   evento     Evento    @relation(fields: [eventoId], references: [id])
   agendamentos Agendamento[]
   motos      Moto[]   // ← nova relação

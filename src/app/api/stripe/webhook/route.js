@@ -280,6 +280,16 @@ export async function POST(req) {
                   value: `${cliente.telefone}\n[Whatsapp](<https://wa.me/${(cliente.telefone || "").replace(/\D/g, "")}>)`,
                 },
                 { id: 979321908, name: "Motos", value: motosString },
+                {
+                  id: 123456789,
+                  name: "Tipo de Ingresso",
+                  value: metadata.tipo || "-",
+                },
+                {
+                  id: 987654321,
+                  name: "Valor",
+                  value: `R$ ${(valor || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+                },
               ],
             },
           ],
@@ -289,13 +299,14 @@ export async function POST(req) {
           username: "SALÃO MOTO FEST",
           avatar_url: "https://i.ibb.co/YBC3HZtG/LOGO.png",
         };
-        if (process.env.DISCORD_WEBHOOK_URL) {
-          await fetch(process.env.DISCORD_WEBHOOK_URL, {
+        await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/discord`,
+          {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(discordPayload),
-          });
-        }
+          }
+        );
       } catch (err) {
         console.error("Erro ao enviar webhook para Discord:", err);
       }

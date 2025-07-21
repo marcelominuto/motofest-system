@@ -313,6 +313,12 @@ export default function DetalheIngressoPage() {
                 value: `${formData.telefone}\n[Whatsapp](<https://wa.me/${formData.telefone.replace(/\D/g, "")}>)`,
               },
               { id: 979321908, name: "Motos", value: motosString },
+              { id: 123456789, name: "Tipo de Ingresso", value: ingresso.tipo },
+              {
+                id: 987654321,
+                name: "Valor",
+                value: `R$ ${calcularValor().toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+              },
             ],
           },
         ],
@@ -322,17 +328,15 @@ export default function DetalheIngressoPage() {
         username: "SALÃO MOTO FEST",
         avatar_url: "https://i.ibb.co/YBC3HZtG/LOGO.png",
       };
-      if (process.env.DISCORD_WEBHOOK_URL) {
-        try {
-          await fetch(process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(discordPayload),
-          });
-        } catch (err) {
-          // Não bloqueia o fluxo se o Discord falhar
-          console.error("Erro ao enviar webhook para Discord:", err);
-        }
+      try {
+        await fetch("/api/discord", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(discordPayload),
+        });
+      } catch (err) {
+        // Não bloqueia o fluxo se o Discord falhar
+        console.error("Erro ao enviar webhook para Discord:", err);
       }
 
       // 2. Criar sessão de checkout Stripe

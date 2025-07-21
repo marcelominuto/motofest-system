@@ -24,6 +24,7 @@ export default function CreateIngressoModal({ onCreated }) {
     valor3: "",
     limite: "",
     descricao: "",
+    link: "",
   });
 
   const handleChange = (e) => {
@@ -47,6 +48,7 @@ export default function CreateIngressoModal({ onCreated }) {
 
       if (form.categoria === "normal") {
         payload.valor = parseFloat(form.valor);
+        if (form.link) payload.link = form.link;
       } else {
         payload.valor1 = parseFloat(form.valor1);
         payload.valor2 = parseFloat(form.valor2);
@@ -73,6 +75,7 @@ export default function CreateIngressoModal({ onCreated }) {
         valor3: "",
         limite: "",
         descricao: "",
+        link: "",
       });
     } catch (error) {
       console.error(error);
@@ -114,15 +117,27 @@ export default function CreateIngressoModal({ onCreated }) {
           </div>
 
           {form.categoria === "normal" && (
-            <div>
-              <Label className="py-2">Valor (R$)</Label>
-              <Input
-                name="valor"
-                type="number"
-                value={form.valor}
-                onChange={handleChange}
-              />
-            </div>
+            <>
+              <div>
+                <Label className="py-2">Valor (R$)</Label>
+                <Input
+                  name="valor"
+                  type="number"
+                  value={form.valor}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <Label className="py-2">Link para compra (opcional)</Label>
+                <Input
+                  name="link"
+                  type="url"
+                  value={form.link}
+                  onChange={handleChange}
+                  placeholder="https://..."
+                />
+              </div>
+            </>
           )}
 
           {form.categoria === "test ride" && (

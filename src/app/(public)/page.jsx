@@ -206,6 +206,31 @@ export default function HomePage() {
           )}
         </div>
       </section>
+      {/* Chamada para cadastro com desconto - visual sóbrio e integrado */}
+      <section className="w-full flex justify-center bg-black pb-12 px-2 md:px-0">
+        <div
+          className="w-full max-w-5xl flex flex-col items-center gap-4 bg-black border border-red-700 rounded-xl shadow-lg p-6 md:p-10 mx-auto"
+          style={{ boxShadow: "0 0 24px 0 rgba(220, 38, 38, 0.10)" }}
+        >
+          <h2
+            className="text-2xl md:text-3xl font-extrabold text-white text-center mb-1"
+            style={{ fontFamily: "Anton, sans-serif" }}
+          >
+            Garanta <span className="text-red-500">50% de desconto</span> no
+            Fest Pass
+          </h2>
+          <p className="text-base md:text-lg text-gray-200 text-center font-sans mb-2 px-4 md:px-12">
+            Cadastre-se agora e aproveite o desconto exclusivo para quem vai
+            comprar o ingresso presencialmente, na hora do evento.
+          </p>
+          <a
+            href="/cadastro"
+            className="mt-2 px-8 py-3 border-2 border-white text-white font-bold rounded-lg text-lg bg-transparent hover:bg-red-600 hover:text-white transition-all outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+          >
+            QUERO MEU DESCONTO
+          </a>
+        </div>
+      </section>
     </>
   );
 }

@@ -6,8 +6,17 @@ import { getEventoAtivo } from "@/lib/getEventoAtivo";
 export async function PUT(req, context) {
   const { id } = context.params;
   const body = await req.json();
-  const { tipo, categoria, descricao, limite, valor, valor1, valor2, valor3 } =
-    body;
+  const {
+    tipo,
+    categoria,
+    descricao,
+    limite,
+    valor,
+    valor1,
+    valor2,
+    valor3,
+    link,
+  } = body;
 
   if (!tipo || !categoria) {
     return NextResponse.json(
@@ -45,6 +54,7 @@ export async function PUT(req, context) {
       valor1: null,
       valor2: null,
       valor3: null,
+      link: null,
     };
 
     if (categoria === "normal") {
@@ -55,6 +65,7 @@ export async function PUT(req, context) {
         );
       }
       data.valor = parseFloat(valor);
+      if (link) data.link = link;
     } else if (categoria === "test ride") {
       if (!valor1 || !valor2 || !valor3) {
         return NextResponse.json(

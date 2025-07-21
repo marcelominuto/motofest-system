@@ -51,6 +51,7 @@ export async function POST(req) {
       valor3,
       limite,
       categoria,
+      link,
     } = await req.json();
 
     if (!tipo || !categoria) {
@@ -76,6 +77,7 @@ export async function POST(req) {
         );
       }
       data.valor = parseFloat(valor);
+      if (link) data.link = link;
     } else if (categoria === "test ride") {
       if (!valor1 || !valor2 || !valor3) {
         return NextResponse.json(

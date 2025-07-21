@@ -25,10 +25,7 @@ export default function IngressoCard({
     if (ingresso.esgotado) return;
 
     // Verificar se é um ingresso do tipo test-ride
-    const isTestRide =
-      ingresso.tipo?.toLowerCase().includes("test-ride") ||
-      ingresso.tipo?.toLowerCase().includes("test ride") ||
-      ingresso.tipo?.toLowerCase().includes("ride pass");
+    const isTestRide = ingresso.categoria === "test ride";
 
     if (isTestRide) {
       // Redirecionar para a página dinâmica do ingresso
@@ -36,12 +33,13 @@ export default function IngressoCard({
         `/ingressos/${ingresso.tipo.toLowerCase().replace(/\s+/g, "-")}`
       );
     } else {
-      // Para outros tipos de ingresso, redirecionar para link específico
-      // Você pode personalizar este link conforme necessário
-      window.open(
-        "https://www.sympla.com.br/evento/moto-fest-taruma-2025/1234567",
-        "_blank"
-      );
+      // Para outros tipos de ingresso, redirecionar para link específico salvo
+      if (ingresso.link) {
+        const url = /^https?:\/\//.test(ingresso.link)
+          ? ingresso.link
+          : `https://${ingresso.link}`;
+        window.open(url, "_blank");
+      }
     }
   };
 

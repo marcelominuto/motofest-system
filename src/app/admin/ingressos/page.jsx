@@ -40,6 +40,7 @@ export default function IngressosPage() {
               <th className="border p-2">Categoria</th>
               <th className="border p-2">Valor</th>
               <th className="border p-2">Limite</th>
+              <th className="border p-2">Link</th>
               <th className="border p-2">Ações</th>
             </tr>
           </thead>
@@ -55,6 +56,24 @@ export default function IngressosPage() {
                     : `R$ ${parseFloat(i.valor).toFixed(2)}`}
                 </td>
                 <td className="border p-2">{i.limite ?? "∞"}</td>
+                <td className="border p-2">
+                  {i.categoria === "normal" && i.link ? (
+                    <a
+                      href={
+                        /^https?:\/\//.test(i.link)
+                          ? i.link
+                          : `https://${i.link}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded font-semibold hover:bg-blue-200 transition"
+                    >
+                      Link
+                    </a>
+                  ) : (
+                    <span className="text-gray-400">-</span>
+                  )}
+                </td>
                 <td className="border p-2">
                   <div className="flex gap-2">
                     <Button
