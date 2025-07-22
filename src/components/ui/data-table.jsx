@@ -25,6 +25,7 @@ export function DataTable({
   data,
   filters,
   searchPlaceholder = "Buscar...",
+  extraActions,
 }) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
@@ -47,14 +48,17 @@ export function DataTable({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-4 items-end mb-2">
-        <Input
-          placeholder={searchPlaceholder}
-          value={globalFilter ?? ""}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="w-64"
-        />
-        {filters}
+      <div className="flex flex-wrap gap-4 items-end mb-2 justify-between">
+        <div className="flex gap-4 items-end">
+          <Input
+            placeholder={searchPlaceholder}
+            value={globalFilter ?? ""}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="w-64"
+          />
+          {filters}
+        </div>
+        {extraActions && extraActions(table)}
       </div>
 
       <div className="rounded-md border bg-white">

@@ -7,6 +7,16 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const marcaId = searchParams.get("marcaId");
   const utilizado = searchParams.get("utilizado");
+  const queryKeys = [...searchParams.keys()];
+  if (
+    queryKeys.length > 0 &&
+    queryKeys.some((key) => key !== "marcaId" && key !== "utilizado")
+  ) {
+    return NextResponse.json(
+      { error: "Parâmetro de busca inválido" },
+      { status: 400 }
+    );
+  }
   const evento = await getEventoAtivo();
   if (!evento) {
     return NextResponse.json(
@@ -20,8 +30,8 @@ export async function GET(req) {
     ...(utilizado === "true"
       ? { utilizado: true }
       : utilizado === "false"
-      ? { utilizado: false }
-      : {}),
+        ? { utilizado: false }
+        : {}),
   };
   const cortesias = await prisma.cortesia.findMany({
     where,

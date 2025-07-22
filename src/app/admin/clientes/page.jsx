@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import CreateClienteModal from "@/components/admin/CreateClienteModal";
 import EditClienteModal from "@/components/admin/EditClienteModal";
 import DeleteClienteButton from "@/components/admin/DeleteClienteButton";
+import * as XLSX from "xlsx";
 
 export default function ClientesPage() {
   const [clientes, setClientes] = useState([]);
@@ -72,15 +73,48 @@ export default function ClientesPage() {
     },
   ];
 
+  function exportarParaExcel(table) {
+    const rows = table.getFilteredRowModel().rows;
+    if (!rows.length) return;
+    const dataExport = rows.map((row) => ({
+      Nome: row.original.nome || "-",
+      CPF: row.original.cpf || "-",
+      CNH: row.original.cnh || "-",
+      Email: row.original.email || "-",
+      Telefone: row.original.telefone || "-",
+    }));
+    const ws = XLSX.utils.json_to_sheet(dataExport);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Clientes");
+    XLSX.writeFile(wb, "clientes.xlsx");
+  }
+
   return (
     <div>
-      <CreateClienteModal onCreated={fetchClientes} />
+      <div className="mb-4 flex flex-wrap gap-2 justify-between items-center">
+        <CreateClienteModal onCreated={fetchClientes} />
+        <Button
+          className="bg-green-600 hover:bg-green-700 text-white"
+          onClick={() => exportarParaExcel(table)}
+          style={{ display: "none" }}
+        >
+          Exportar Planilha
+        </Button>
+      </div>
       <h1 className="text-2xl font-bold mb-6">Clientes</h1>
 
       <DataTable
         columns={columns}
         data={clientes}
         searchPlaceholder="Buscar por nome, CPF, CNH ou e-mail..."
+        extraActions={(table) => (
+          <Button
+            className="bg-green-600 hover:bg-green-700 text-white"
+            onClick={() => exportarParaExcel(table)}
+          >
+            Exportar Planilha
+          </Button>
+        )}
       />
 
       <EditClienteModal

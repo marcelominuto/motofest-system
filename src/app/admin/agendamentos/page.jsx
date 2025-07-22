@@ -14,6 +14,7 @@ import DeleteAgendamentoModal from "@/components/admin/DeleteAgendamentoModal";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
+import * as XLSX from "xlsx";
 
 export default function AgendamentosPage() {
   const [agendamentos, setAgendamentos] = useState([]);
@@ -310,6 +311,29 @@ export default function AgendamentosPage() {
       ? filtroMoto
       : "";
 
+  function exportarParaExcel(table) {
+    const rows = table.getFilteredRowModel().rows;
+    if (!rows.length) return;
+    const dataExport = rows.map((row) => {
+      const ag = row.original;
+      return {
+        Cliente: ag.cliente?.nome || "-",
+        CPF: ag.cliente?.cpf || "-",
+        Ingresso: ag.ingresso?.tipo || "-",
+        Moto: ag.moto?.nome || "-",
+        Marca: ag.moto?.marca?.nome || "-",
+        Data: ag.data ? new Date(ag.data).toLocaleDateString() : "-",
+        Horário: ag.horario?.hora || "-",
+        Status: ag.status || "-",
+        Checkin: ag.checkin ? "Sim" : "Não",
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(dataExport);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Agendamentos");
+    XLSX.writeFile(wb, "agendamentos.xlsx");
+  }
+
   return (
     <div className="p-6">
       <Dialog open={modalAberto} onOpenChange={setModalAberto}>
@@ -433,6 +457,14 @@ export default function AgendamentosPage() {
             </div>
           </>
         }
+        extraActions={(table) => (
+          <Button
+            className="bg-green-600 hover:bg-green-700 text-white"
+            onClick={() => exportarParaExcel(table)}
+          >
+            Exportar Planilha
+          </Button>
+        )}
       />
 
       <EditAgendamentoModal

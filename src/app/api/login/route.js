@@ -33,10 +33,14 @@ export async function POST(req) {
       { expiresIn: "7d" }
     );
 
-    return NextResponse.json({
-      token,
+    const response = NextResponse.json({
       admin: { id: admin.id, nome: admin.nome, email: admin.email },
     });
+    response.headers.set(
+      "Set-Cookie",
+      `auth_token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict`
+    );
+    return response;
   } catch (error) {
     console.error("Erro no login:", error);
     return NextResponse.json({ erro: "Erro interno" }, { status: 500 });

@@ -18,6 +18,7 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha }),
+        credentials: "include", // garante que o cookie seja aceito
       });
       const data = await res.json();
       if (!res.ok) {
@@ -25,8 +26,7 @@ export default function LoginPage() {
         setLoading(false);
         return;
       }
-      // Salva o token no cookie
-      document.cookie = `auth_token=${data.token}; path=/; max-age=604800; SameSite=Strict`;
+      // Apenas redireciona após sucesso
       router.push("/admin");
     } catch (err) {
       setErro("Erro de conexão");

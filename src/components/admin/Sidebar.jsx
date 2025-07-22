@@ -15,6 +15,7 @@ import {
   ScanBarcode,
   ShoppingBag,
   LogOut,
+  TrafficCone,
 } from "lucide-react";
 
 const navItems = [
@@ -27,6 +28,11 @@ const navItems = [
     label: "Agendamentos",
     href: "/admin/agendamentos",
     icon: <CalendarCheck className="w-5 h-5 mr-2" />,
+  },
+  {
+    label: "Mobilidade",
+    href: "/admin/mobilidade",
+    icon: <TrafficCone className="w-5 h-5 mr-2" />,
   },
   {
     label: "Clientes",

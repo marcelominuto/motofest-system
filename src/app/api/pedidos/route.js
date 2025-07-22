@@ -7,6 +7,13 @@ export async function GET(req) {
   try {
     const url = new URL(req.url, "http://localhost");
     const paymentIntentId = url.searchParams.get("paymentIntentId");
+    const queryKeys = [...url.searchParams.keys()];
+    if (queryKeys.length > 0 && !(queryKeys.length === 1 && paymentIntentId)) {
+      return NextResponse.json(
+        { error: "Parâmetro de busca inválido" },
+        { status: 400 }
+      );
+    }
     const evento = await getEventoAtivo();
     if (!evento) {
       return NextResponse.json(

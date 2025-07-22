@@ -1,9 +1,32 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// GET: list all clients
-export async function GET() {
+// GET: Busca cliente por CPF (público) ou retorna todos se autenticado (admin)
+export async function GET(req) {
   try {
+    const { searchParams } = new URL(req.url);
+    const cpf = searchParams.get("cpf");
+
+    if (cpf) {
+      // Busca apenas pelo CPF informado
+      const cliente = await prisma.cliente.findUnique({ where: { cpf } });
+      if (!cliente) {
+        return NextResponse.json(
+          { error: "Cliente não encontrado" },
+          { status: 404 }
+        );
+      }
+      // Retorne apenas dados mínimos, nunca dados sensíveis!
+      return NextResponse.json({
+        id: cliente.id,
+        nome: cliente.nome,
+        email: cliente.email,
+        cpf: cliente.cpf,
+        // ...outros campos públicos
+      });
+    }
+
+    // Se não houver filtro, retorna todos (mas só admin chega aqui)
     const clientes = await prisma.cliente.findMany({
       orderBy: { nome: "asc" },
     });
@@ -11,7 +34,7 @@ export async function GET() {
   } catch (error) {
     console.error("GET /clientes error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch clients" },
+      { error: "Failed to fetch client(s)" },
       { status: 500 }
     );
   }

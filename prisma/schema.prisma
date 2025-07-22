@@ -67,6 +67,7 @@ model Cliente {
   telefone     String?
   agendamentos Agendamento[]
   pedidos      Pedido[]
+  mobilidades  Mobilidade[]  // relação inversa para Mobilidade
 }
 
 model Horario {
@@ -132,4 +133,12 @@ model Admin {
   senha     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Mobilidade {
+  id        Int    @id @default(autoincrement())
+  clienteId Int
+  marcas    String
+
+  cliente   Cliente @relation(fields: [clienteId], references: [id])
 }

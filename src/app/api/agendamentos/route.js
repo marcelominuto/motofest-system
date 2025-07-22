@@ -4,8 +4,16 @@ import { v4 as uuidv4 } from "uuid";
 import { getEventoAtivo } from "@/lib/getEventoAtivo";
 
 // GET: Listar todos os agendamentos do evento ativo
-export async function GET() {
+export async function GET(req) {
   try {
+    const url = new URL(req.url, "http://localhost");
+    const queryKeys = [...url.searchParams.keys()];
+    if (queryKeys.length > 0) {
+      return NextResponse.json(
+        { error: "Parâmetro de busca inválido" },
+        { status: 400 }
+      );
+    }
     const evento = await getEventoAtivo();
     if (!evento) {
       return NextResponse.json(

@@ -36,6 +36,7 @@ export default function CadastroPage() {
   const [loading, setLoading] = useState(false);
   const [qrValue, setQrValue] = useState("");
   const [erro, setErro] = useState("");
+  const [nomeExibido, setNomeExibido] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,6 +68,7 @@ export default function CadastroPage() {
       if (res.ok) {
         cliente = await res.json();
         novoCadastro = true;
+        setNomeExibido(cliente.nome); // nome do novo cadastro
       } else {
         // Se erro, tenta buscar cliente existente pelo CPF
         const busca = await fetch(
@@ -89,6 +91,7 @@ export default function CadastroPage() {
           }
           if (clienteEncontrado) {
             cliente = clienteEncontrado;
+            setNomeExibido(cliente.nome); // nome do cliente já cadastrado
             setErro(
               "Cadastro já existente! Apresente o QR code abaixo na bilheteria."
             );
@@ -177,7 +180,7 @@ export default function CadastroPage() {
               style={{ background: "#18181b" }}
             >
               <span className="text-white text-xl font-bold block mb-1">
-                {form.nome}
+                {nomeExibido || form.nome}
               </span>
               <span className="text-gray-300 text-base font-mono tracking-wider mb-4">
                 {form.cpf}
@@ -214,7 +217,9 @@ export default function CadastroPage() {
                 doc.setTextColor("#fff");
                 doc.setFontSize(18);
                 doc.setFont(undefined, "bold");
-                doc.text(form.nome, 160, 60, { align: "center" });
+                doc.text(nomeExibido || form.nome, 160, 60, {
+                  align: "center",
+                });
                 doc.setFontSize(14);
                 doc.setFont(undefined, "normal");
                 doc.setTextColor("#ccc");
