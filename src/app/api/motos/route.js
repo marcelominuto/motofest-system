@@ -25,8 +25,16 @@ export async function GET() {
 // POST: Create new motorcycle
 export async function POST(req) {
   try {
-    const { nome, marcaId, quantidade, categoria, ingressoId } =
-      await req.json();
+    const {
+      nome,
+      marcaId,
+      quantidade,
+      categoria,
+      ingressoId,
+      foto,
+      cvs,
+      cilindradas,
+    } = await req.json();
 
     if (!nome || !marcaId || !quantidade || !categoria || !ingressoId) {
       return NextResponse.json(
@@ -65,6 +73,9 @@ export async function POST(req) {
         ingressoId: parseInt(ingressoId),
         quantidade: parseInt(quantidade),
         categoria,
+        foto: foto || null,
+        cvs: cvs || null,
+        cilindradas: cilindradas || null,
       },
       include: {
         marca: true,

@@ -39,6 +39,16 @@ export default function MotosPage() {
       header: "Modelo",
     },
     {
+      accessorKey: "cvs",
+      header: "CVS",
+      cell: ({ row }) => row.original.cvs || "-",
+    },
+    {
+      accessorKey: "cilindradas",
+      header: "Cilindradas",
+      cell: ({ row }) => row.original.cilindradas || "-",
+    },
+    {
       accessorKey: "ingresso",
       header: "Ingresso",
       cell: ({ row }) => row.original.ingresso?.tipo || "-",

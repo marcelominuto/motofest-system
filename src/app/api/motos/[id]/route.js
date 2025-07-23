@@ -4,7 +4,16 @@ import prisma from "@/lib/prisma";
 // PUT: Update motorcycle by ID
 export async function PUT(req, { params }) {
   const { id } = await params;
-  const { nome, marcaId, quantidade, categoria, ingressoId } = await req.json();
+  const {
+    nome,
+    marcaId,
+    quantidade,
+    categoria,
+    ingressoId,
+    foto,
+    cvs,
+    cilindradas,
+  } = await req.json();
 
   if (!nome || !marcaId || !quantidade || !categoria || !ingressoId) {
     return NextResponse.json(
@@ -37,6 +46,9 @@ export async function PUT(req, { params }) {
         ingressoId: parseInt(ingressoId),
         quantidade: parseInt(quantidade),
         categoria,
+        foto: foto || null,
+        cvs: cvs || null,
+        cilindradas: cilindradas || null,
       },
       include: {
         marca: true,

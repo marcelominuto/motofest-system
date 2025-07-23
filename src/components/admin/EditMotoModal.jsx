@@ -19,6 +19,9 @@ export default function EditMotoModal({ open, onClose, moto, onUpdated }) {
     ingressoId: "",
     quantidade: "",
     categoria: "",
+    foto: "",
+    cvs: "",
+    cilindradas: "",
   });
   const [marcas, setMarcas] = useState([]);
   const [ingressos, setIngressos] = useState([]);
@@ -31,6 +34,9 @@ export default function EditMotoModal({ open, onClose, moto, onUpdated }) {
         ingressoId: moto.ingressoId,
         quantidade: moto.quantidade,
         categoria: moto.categoria,
+        foto: moto.foto || "",
+        cvs: moto.cvs || "",
+        cilindradas: moto.cilindradas || "",
       });
     }
   }, [moto]);
@@ -151,6 +157,36 @@ export default function EditMotoModal({ open, onClose, moto, onUpdated }) {
               <option value="elétrica">Elétrica</option>
               <option value="off-road">Off-road</option>
             </select>
+          </div>
+
+          <div>
+            <Label className="py-2">Link da Foto</Label>
+            <Input
+              name="foto"
+              value={form.foto}
+              onChange={handleChange}
+              placeholder="https://exemplo.com/foto.jpg"
+            />
+          </div>
+
+          <div>
+            <Label className="py-2">CVS</Label>
+            <Input
+              name="cvs"
+              value={form.cvs}
+              onChange={handleChange}
+              placeholder="Ex: 125cv"
+            />
+          </div>
+
+          <div>
+            <Label className="py-2">Cilindradas</Label>
+            <Input
+              name="cilindradas"
+              value={form.cilindradas}
+              onChange={handleChange}
+              placeholder="Ex: 150cc"
+            />
           </div>
         </div>
 

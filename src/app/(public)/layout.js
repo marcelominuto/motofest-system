@@ -9,6 +9,7 @@ export default function PublicLayout({ children }) {
   const pathname = usePathname();
   const navLinks = [
     { href: "/ingressos", label: "Ingressos" },
+    { href: "/motos", label: "Motos" },
     { href: "/agenda", label: "Agenda" },
     { href: "/faq", label: "FAQ" },
   ];
@@ -74,18 +75,11 @@ export default function PublicLayout({ children }) {
                 Ingressos
               </Link>
               <Link
-                href="/shows"
+                href="/motos"
                 className="text-white text-lg font-bold uppercase tracking-wide hover:text-red-600 transition"
                 onClick={() => setMenuOpen(false)}
               >
-                Shows
-              </Link>
-              <Link
-                href="/atracoes"
-                className="text-white text-lg font-bold uppercase tracking-wide hover:text-red-600 transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                Atrações
+                Motos
               </Link>
               <Link
                 href="/agenda"

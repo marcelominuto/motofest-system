@@ -53,6 +53,9 @@ model Moto {
   nome         String
   quantidade   Int
   categoria    String
+  foto         String?       // link da foto da moto
+  cvs          String?       // CVS da moto
+  cilindradas  String?       // cilindradas da moto
   marca        Marca         @relation(fields: [marcaId], references: [id])
   ingresso     Ingresso      @relation(fields: [ingressoId], references: [id]) // ← nova relação
   agendamentos Agendamento[]

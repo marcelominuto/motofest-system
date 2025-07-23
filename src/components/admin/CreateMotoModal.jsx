@@ -23,6 +23,9 @@ export default function CreateMotoModal({ onCreated }) {
     ingressoId: "",
     quantidade: "",
     categoria: "",
+    foto: "",
+    cvs: "",
+    cilindradas: "",
   });
 
   useEffect(() => {
@@ -79,6 +82,9 @@ export default function CreateMotoModal({ onCreated }) {
         ingressoId: "",
         quantidade: "",
         categoria: "",
+        foto: "",
+        cvs: "",
+        cilindradas: "",
       });
       onCreated();
     } catch (error) {
@@ -161,6 +167,36 @@ export default function CreateMotoModal({ onCreated }) {
               <option value="elétrica">Elétrica</option>
               <option value="off-road">Off-road</option>
             </select>
+          </div>
+
+          <div>
+            <Label className="py-2">Link da Foto</Label>
+            <Input
+              name="foto"
+              value={form.foto}
+              onChange={handleChange}
+              placeholder="https://exemplo.com/foto.jpg"
+            />
+          </div>
+
+          <div>
+            <Label className="py-2">CVS</Label>
+            <Input
+              name="cvs"
+              value={form.cvs}
+              onChange={handleChange}
+              placeholder="Ex: 125cc"
+            />
+          </div>
+
+          <div>
+            <Label className="py-2">Cilindradas</Label>
+            <Input
+              name="cilindradas"
+              value={form.cilindradas}
+              onChange={handleChange}
+              placeholder="Ex: 150cc"
+            />
           </div>
         </div>
 
