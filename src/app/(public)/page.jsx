@@ -27,11 +27,24 @@ function getTimeLeft(targetDate) {
 
 export default function HomePage() {
   // Banner
-  const banners = [{ id: 1 }, { id: 2 }, { id: 3 }];
+  const banners = [
+    { id: 1, desktop: "/banner1.png", mobile: "/banner1-mobile.png" },
+    { id: 2, desktop: "/banner2.png", mobile: "/banner2-mobile.png" },
+    { id: 3, desktop: "/banner3.png", mobile: "/banner3-mobile.png" },
+  ];
   const [current, setCurrent] = useState(0);
   const nextSlide = () => setCurrent((prev) => (prev + 1) % banners.length);
   const prevSlide = () =>
     setCurrent((prev) => (prev - 1 + banners.length) % banners.length);
+
+  // Auto-play do slideshow
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000); // Muda a cada 5 segundos
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Contador
   // const countdown = useCountdown(EVENT_START);
@@ -73,9 +86,15 @@ export default function HomePage() {
       {/* Banner Slideshow - corrigido para evitar scroll horizontal */}
       <section className="relative w-full h-[220px] md:h-[350px] lg:h-[400px] flex items-stretch overflow-hidden bg-black m-0 p-0 overflow-x-hidden">
         <picture className="w-full h-full">
+          {/* Desktop */}
+          <source
+            media="(min-width: 768px)"
+            srcSet={banners[current].desktop}
+          />
+          {/* Mobile */}
           <img
-            src={`https://placehold.co/2050x750?text=Banner+Principal+1`}
-            alt={`Banner Principal 1`}
+            src={banners[current].mobile}
+            alt={`Banner Principal ${banners[current].id}`}
             className="object-cover w-full h-full max-w-full select-none pointer-events-none"
             draggable={false}
           />
@@ -117,7 +136,7 @@ export default function HomePage() {
             <span
               key={idx}
               className={`w-2 h-2 rounded-full ${
-                idx === 0 ? "bg-white" : "bg-gray-500"
+                idx === current ? "bg-white" : "bg-gray-500"
               }`}
             />
           ))}
@@ -157,6 +176,32 @@ export default function HomePage() {
               : { inicio: "--", mesInicio: "", fim: "--", mesFim: "" }
           }
         />
+      </section>
+
+      {/* Chamada para cadastro com desconto - visual sóbrio e integrado */}
+      <section className="w-full flex justify-center bg-black pb-12 px-2 md:px-0">
+        <div
+          className="w-full max-w-5xl flex flex-col items-center gap-4 bg-black border border-red-700 rounded-xl shadow-lg p-6 md:p-10 mx-auto"
+          style={{ boxShadow: "0 0 24px 0 rgba(220, 38, 38, 0.10)" }}
+        >
+          <h2
+            className="text-2xl md:text-3xl font-extrabold text-white text-center mb-1"
+            style={{ fontFamily: "Anton, sans-serif" }}
+          >
+            Garanta <span className="text-red-500">50% de desconto</span> no
+            Fest Pass
+          </h2>
+          <p className="text-base md:text-lg text-gray-200 text-center font-sans mb-2 px-4 md:px-12">
+            Cadastre-se agora e aproveite o desconto exclusivo para quem vai
+            comprar o ingresso presencialmente, na hora do evento.
+          </p>
+          <a
+            href="/cadastro"
+            className="mt-2 px-8 py-3 border-2 border-white text-white font-bold rounded-lg text-lg bg-transparent hover:bg-red-600 hover:text-white transition-all outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+          >
+            QUERO MEU DESCONTO
+          </a>
+        </div>
       </section>
       {/* Cards de ingressos dinâmicos */}
       <section className="w-full flex flex-col items-center bg-black py-8">
@@ -204,31 +249,6 @@ export default function HomePage() {
                 );
               })
           )}
-        </div>
-      </section>
-      {/* Chamada para cadastro com desconto - visual sóbrio e integrado */}
-      <section className="w-full flex justify-center bg-black pb-12 px-2 md:px-0">
-        <div
-          className="w-full max-w-5xl flex flex-col items-center gap-4 bg-black border border-red-700 rounded-xl shadow-lg p-6 md:p-10 mx-auto"
-          style={{ boxShadow: "0 0 24px 0 rgba(220, 38, 38, 0.10)" }}
-        >
-          <h2
-            className="text-2xl md:text-3xl font-extrabold text-white text-center mb-1"
-            style={{ fontFamily: "Anton, sans-serif" }}
-          >
-            Garanta <span className="text-red-500">50% de desconto</span> no
-            Fest Pass
-          </h2>
-          <p className="text-base md:text-lg text-gray-200 text-center font-sans mb-2 px-4 md:px-12">
-            Cadastre-se agora e aproveite o desconto exclusivo para quem vai
-            comprar o ingresso presencialmente, na hora do evento.
-          </p>
-          <a
-            href="/cadastro"
-            className="mt-2 px-8 py-3 border-2 border-white text-white font-bold rounded-lg text-lg bg-transparent hover:bg-red-600 hover:text-white transition-all outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
-          >
-            QUERO MEU DESCONTO
-          </a>
         </div>
       </section>
     </>

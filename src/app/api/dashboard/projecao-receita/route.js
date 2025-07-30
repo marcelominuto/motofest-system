@@ -32,32 +32,51 @@ export async function GET() {
     });
 
     if (!eventoAtivo) {
-      return NextResponse.json({ total: 0 });
+      return NextResponse.json({ projecao: 0 });
     }
 
-    // 1. Faturamento de pedidos pagos
+    // Calcular dias restantes do evento
+    const hoje = new Date();
+    const diasRestantes = Math.ceil(
+      (eventoAtivo.dataFim - hoje) / (1000 * 60 * 60 * 24)
+    );
+
+    if (diasRestantes <= 0) {
+      return NextResponse.json({ projecao: 0 });
+    }
+
+    // Buscar faturamento dos últimos 7 dias (incluindo agendamentos diretos)
+    const umaSemanaAtras = new Date(hoje.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    // 1. Pedidos pagos dos últimos 7 dias
     const pedidos = await prisma.pedido.findMany({
       where: {
         status: "pago",
         eventoId: eventoAtivo.id,
+        createdAt: {
+          gte: umaSemanaAtras,
+        },
       },
       select: {
         valor: true,
+        createdAt: true,
       },
     });
 
     const faturamentoPedidos = pedidos.reduce((sum, pedido) => {
-      const valor = parseFloat(pedido.valor.toString());
-      return sum + valor;
+      return sum + parseFloat(pedido.valor.toString());
     }, 0);
 
-    // 2. Faturamento de agendamentos diretos (sem pedido vinculado)
+    // 2. Agendamentos diretos dos últimos 7 dias (usando createdAt para quando foi criado)
     const agendamentosDiretos = await prisma.agendamento.findMany({
       where: {
         eventoId: eventoAtivo.id,
         pedidoId: null,
         status: {
           not: "cortesia",
+        },
+        createdAt: {
+          gte: umaSemanaAtras,
         },
       },
       include: {
@@ -100,11 +119,18 @@ export async function GET() {
       return sum + valor;
     }, 0);
 
-    // 3. Total do faturamento
-    const total = faturamentoPedidos + faturamentoAgendamentosDiretos;
+    // Calcular faturamento médio diário dos últimos 7 dias
+    const faturamentoTotal =
+      faturamentoPedidos + faturamentoAgendamentosDiretos;
+    const faturamentoMedioDiario = faturamentoTotal / 7;
+
+    // Projeção = faturamento médio diário × dias restantes
+    const projecao = faturamentoMedioDiario * diasRestantes;
 
     return NextResponse.json({
-      total,
+      projecao: Math.round(projecao),
+      diasRestantes,
+      faturamentoMedioDiario: Math.round(faturamentoMedioDiario),
       faturamentoPedidos,
       faturamentoAgendamentosDiretos,
       quantidadeAgendamentosDiretos: agendamentosDiretos.length,
@@ -113,14 +139,7 @@ export async function GET() {
         .length,
     });
   } catch (error) {
-    console.error("Erro ao buscar faturamento:", error);
-    return NextResponse.json({
-      total: 0,
-      faturamentoPedidos: 0,
-      faturamentoAgendamentosDiretos: 0,
-      quantidadeAgendamentosDiretos: 0,
-      quantidadePedidos: 0,
-      clientesComAgendamentosDiretos: 0,
-    });
+    console.error("Erro ao calcular projeção de receita:", error);
+    return NextResponse.json({ projecao: 0 });
   }
 }

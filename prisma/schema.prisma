@@ -93,6 +93,7 @@ model Agendamento {
   codigo     String   @unique
   status     String   @default("pendente") // pago, pendente, cortesia, checkin
   checkin    Boolean  @default(false)
+  createdAt  DateTime @default(now())
 
   cliente  Cliente  @relation(fields: [clienteId], references: [id])
   ingresso Ingresso @relation(fields: [ingressoId], references: [id])

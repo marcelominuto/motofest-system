@@ -354,7 +354,7 @@ export default function DetalheIngressoPage() {
           modelo: `${getMarcaNome(m.motoId)} ${getMotoNome(m.motoId)}`.trim(),
           horario: getHorarioLabel(m.horarioId),
         }));
-      const response = await fetch("/api/stripe/checkout-session", {
+      const response = await fetch("/api/pagarme/checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -438,10 +438,14 @@ export default function DetalheIngressoPage() {
           </h1>
         </div>
         <img
-          src="/ride-pass-banner.jpg"
+          src={`/${ingresso.tipo.toLowerCase().replace(/\s+/g, "-")}.jpg`}
           alt={`Banner ${ingresso.tipo}`}
           className="object-cover w-full h-full max-w-full select-none pointer-events-none"
           draggable={false}
+          onError={(e) => {
+            // Fallback para imagem padrão se a específica não existir
+            e.target.src = "/banner1.png";
+          }}
         />
       </section>
 
@@ -781,48 +785,160 @@ export default function DetalheIngressoPage() {
 
               {/* Termos de participação sempre visíveis, acima do botão */}
               <div className="bg-[#222] border border-gray-600 rounded-lg p-4 text-xs text-white mb-2 max-h-48 overflow-y-auto">
-                <strong>TERMOS DE PARTICIPAÇÃO - MOTO FEST TARUMÃ 2025</strong>
+                <strong>TERMOS DE PARTICIPAÇÃO – SALÃO MOTO FEST 2025</strong>
                 <br />
-                Ao adquirir o Ride Pass, o participante concorda com as
-                seguintes condições:
-                <ul className="list-disc ml-5 mt-2">
-                  <li>
-                    O ingresso Ride Pass dá direito a até 3 test rides na pista
-                    de Tarumã, conforme disponibilidade de motos e horários.
-                  </li>
-                  <li>
-                    O participante deve apresentar documento com foto e CNH
-                    válida para categoria de moto escolhida.
-                  </li>
-                  <li>
-                    O uso de equipamentos de segurança (capacete, jaqueta,
-                    luvas, calça e botas) é obrigatório.
-                  </li>
-                  <li>
-                    O participante deve respeitar as orientações da equipe
-                    organizadora e dos instrutores.
-                  </li>
-                  <li>
-                    A organização reserva-se o direito de cancelar ou alterar
-                    horários por motivos de segurança ou força maior.
-                  </li>
-                  <li>
-                    O ingresso não é reembolsável em caso de não comparecimento.
-                  </li>
-                  <li>
-                    O participante declara estar em condições físicas e mentais
-                    para participar do test ride.
-                  </li>
-                  <li>
-                    O Ride Pass garante a possibilidade de participar do test
-                    ride na pista de mobilidade urbana, mediante
-                    disponibilidade.
-                  </li>
-                </ul>
-                <span className="block mt-2">
-                  Outros detalhes e regras podem ser informados pela organização
-                  no local do evento.
-                </span>
+                Os participantes farão sua adesão ao EVENTO "SALÃO MOTO FEST
+                2025", mediante o cadastro nesta página, fornecendo os dados
+                solicitados corretamente, e desde que aceitas as condições
+                abaixo para participação no EVENTO.
+                <br />
+                Não serão aceitos cadastros com dados faltantes.
+                <br />
+                <br />
+                <strong>COMPRAS ONLINE</strong>
+                <br />
+                1. A compra de ingressos poderá ser realizada através do site
+                oficial do evento, com pagamento via cartão de crédito, Pix ou
+                outros meios disponibilizados na plataforma.
+                <br />
+                2. A confirmação da compra estará sujeita à validação do
+                pagamento. O participante receberá por e-mail um comprovante com
+                seu número de pedido e instruções para participação no evento.
+                <br />
+                3. A não finalização do pagamento, por qualquer motivo,
+                resultará no cancelamento automático do pedido. A vaga somente
+                estará garantida após a confirmação do pagamento.
+                <br />
+                4. Em caso de arrependimento da compra, o participante poderá
+                solicitar o cancelamento e reembolso em até 7 (sete) dias
+                corridos após a confirmação do pagamento, desde que o pedido
+                seja feito com pelo menos 72 horas de antecedência ao início do
+                evento, conforme previsto no Código de Defesa do Consumidor.
+                <br />
+                5. Após esse prazo, não serão aceitos pedidos de reembolso,
+                exceto em casos de cancelamento integral do evento pela
+                organização.
+                <br />
+                <br />
+                <strong>CONDIÇÕES GERAIS</strong>
+                <br />
+                1. O participante, no ato da adesão, autoriza a organizadora do
+                evento a armazenar em banco de dados as informações contidas no
+                cadastro.
+                <br />
+                2. O participante, no ato da adesão, autoriza a organizadora do
+                evento a utilizar as informações contidas no cadastro para uso
+                futuro em possíveis ações comerciais ligadas diretamente à
+                organizadora ou às empresas parceiras conforme sua necessidade e
+                conveniência.
+                <br />
+                3. A participação neste evento implica aceitação total de todas
+                as condições gerais, que poderão ser alteradas pela empresa
+                promotora mediante divulgação aos participantes, inclusive ao
+                longo do evento.
+                <br />
+                4. A organizadora não se responsabiliza, sob nenhuma hipótese,
+                por ingressos adquiridos fora dos canais oficiais: site oficial
+                (via Sympla) e bilheteria no local do evento.
+                <br />
+                5. A finalização da compra dos ingressos está sujeita à
+                disponibilidade no estoque e deve ser aprovada diretamente com a
+                organizadora do evento.
+                <br />
+                6. Todas as despesas com deslocamento, hospedagem e alimentação
+                são de responsabilidade do participante, bem como quaisquer
+                outras despesas necessárias para sua participação no evento.
+                <br />
+                <br />
+                <strong>TEST RIDE E CONDIÇÕES DE PILOTAGEM</strong>
+                <br />
+                1. Para participação no Test Ride, o motociclista deverá possuir
+                CNH categoria A, com no mínimo três anos de emissão. Para
+                pilotar motos da categoria Esportivas (Sport Pass), são exigidos
+                5 anos de experiência. A falta da habilitação adequada impede a
+                realização do Test Ride e não gera reembolso.
+                <br />
+                2. A aquisição do Test Ride dá direito à escolha de 1 a 3 motos.
+                Cada moto pode ser pilotada por três voltas completas no
+                autódromo, totalizando cerca de 9 km por moto.
+                <br />
+                3. O acesso à área de Test Ride é permitido mediante
+                apresentação da credencial, entregue no evento. A credencial é
+                pessoal, intransferível e contém a lista das motos escolhidas.
+                Por segurança, não é permitido levar garupa.
+                <br />
+                4. O participante do Test Ride deverá se apresentar com
+                equipamento de segurança adequado: macacão ou jaqueta e calça
+                comprida de couro ou cordura, calçado fechado, luvas e capacete
+                fechado. Serão aceitas roupas de equipamentos de segurança para
+                pilotagem, não podendo usar: capacete aberto, roupas de moletom,
+                corta vento, legging e jeans desfiado ou com aberturas. A falta
+                de qualquer dos equipamentos de segurança em questão implicará a
+                não participação do mesmo no Test Ride. O fornecimento do
+                equipamento de segurança não é de responsabilidade da
+                Organização do evento. Caso o participante não possa efetuar o
+                Test Ride devido à ausência do equipamento de segurança, não
+                será realizada a devolução da inscrição.
+                <br />
+                <br />
+                <strong>PISTA OFF-ROAD</strong>
+                <br />
+                1. O evento contará com uma área de Test Ride em pista off-road,
+                com percurso específico para motos de uso misto e aventureiras.
+                <br />
+                2. Para participação na pista off-road, aplicam-se as mesmas
+                exigências de habilitação e uso de equipamentos de segurança da
+                pista on-road.
+                <br />
+                3. A organização se reserva o direito de limitar o número de
+                participantes na pista off-road por questões de segurança e
+                estrutura. A escolha desta modalidade será feita no momento da
+                inscrição, de acordo com a disponibilidade.
+                <br />
+                <br />
+                <strong>REGRAS DE CONDUTA E SEGURANÇA</strong>
+                <br />
+                1. Em caso de chuva extrema ou outras condições adversas, a
+                organização e os instrutores avaliarão a segurança da atividade.
+                Se julgado inseguro, o Test Ride pode ser cancelado.
+                <br />
+                2. O participante deve seguir todas as regras de segurança e
+                conduta dos instrutores. Em caso de desobediência, poderá ser
+                retirado do Test Ride. A participação no briefing é obrigatória.
+                <br />
+                3. Durante o Test Ride, não será tolerado o consumo de bebida
+                alcoólica ou qualquer outra substância ilícita ou não condizente
+                com o ato de pilotar. O participante só será aceito na pista
+                após passar pelo teste do bafômetro.
+                <br />
+                4. No caso de perdas e danos decorrentes de acidente, os mesmos
+                correrão por conta exclusiva do participante, que desde já
+                isenta a empresa organizadora e seus patrocinadores de quaisquer
+                responsabilidades.
+                <br />
+                5. É de responsabilidade exclusiva do convidado zelar por sua
+                segurança e por seus pertences pessoais.
+                <br />
+                6. O não comparecimento ao evento na data e horário marcados
+                acarretará a perda da inscrição, sem possibilidade de
+                transferência ou devolução.
+                <br />
+                <br />
+                <strong>USO DE IMAGEM E ALTERAÇÕES DO EVENTO</strong>
+                <br />
+                1. O participante autoriza, de forma irrevogável e irretratável,
+                a divulgação de seu nome, imagem, som de voz e demais registros
+                pessoais pela empresa organizadora e seus parceiros, em
+                quaisquer mídias e formatos, sem qualquer ônus.
+                <br />
+                2. A organização pode cancelar ou alterar o evento sem aviso
+                prévio. Inscritos serão informados por e-mail.
+                <br />
+                3. O participante declara expressamente, de forma irrevogável e
+                irretratável, que tem ciência e está de acordo com todas as
+                condições acima, assim como isenta a empresa promotora por
+                eventuais danos e/ou prejuízos decorrentes do evento, qualquer
+                que seja a causa.
               </div>
 
               {/* Checkbox de aceite */}
@@ -841,9 +957,7 @@ export default function DetalheIngressoPage() {
                   className="text-xs text-white leading-relaxed"
                 >
                   Li e concordo com os{" "}
-                  <strong>
-                    Termos de Participação - Moto Fest Tarumã 2025
-                  </strong>
+                  <strong>Termos de Participação – Salão Moto Fest 2025</strong>
                   .
                 </label>
               </div>

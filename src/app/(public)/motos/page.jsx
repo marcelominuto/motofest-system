@@ -167,8 +167,11 @@ function MotoCard({ moto }) {
       naked: "bg-gradient-to-r from-purple-500 to-indigo-500",
       touring: "bg-gradient-to-r from-teal-500 to-blue-500",
       custom: "bg-gradient-to-r from-yellow-500 to-orange-500",
-      sport: "bg-gradient-to-r from-red-500 to-orange-500",
-      adventure: "bg-gradient-to-r from-green-500 to-blue-500",
+      esportiva: "bg-gradient-to-r from-red-500 to-orange-500",
+      "super esportiva": "bg-gradient-to-r from-green-500 to-blue-500",
+      trail: "bg-gradient-to-r from-purple-500 to-indigo-500",
+      "big trail": "bg-gradient-to-r from-teal-500 to-blue-500",
+      street: "bg-gradient-to-r from-yellow-500 to-orange-500",
     };
 
     // Retorna cor específica se existir, senão usa cor padrão baseada no hash do nome

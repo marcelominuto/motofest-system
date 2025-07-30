@@ -152,10 +152,16 @@ export default function EditMotoModal({ open, onClose, moto, onUpdated }) {
               onChange={handleChange}
             >
               <option value="">Selecione</option>
-              <option value="pista">Pista</option>
+              <option value="custom">Custom</option>
               <option value="scooter">Scooter</option>
               <option value="elétrica">Elétrica</option>
-              <option value="off-road">Off-road</option>
+              <option value="trail">Trail</option>
+              <option value="big trail">Big Trail</option>
+              <option value="naked">Naked</option>
+              <option value="street">Street</option>
+              <option value="esportiva">Esportiva</option>
+              <option value="super esportiva">Super Esportiva</option>
+              <option value="touring">Touring</option>
             </select>
           </div>
 

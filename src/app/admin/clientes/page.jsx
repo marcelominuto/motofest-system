@@ -90,18 +90,11 @@ export default function ClientesPage() {
   }
 
   return (
-    <div>
-      <div className="mb-4 flex flex-wrap gap-2 justify-between items-center">
+    <div className="p-6">
+      <div className="mb-4">
         <CreateClienteModal onCreated={fetchClientes} />
-        <Button
-          className="bg-green-600 hover:bg-green-700 text-white"
-          onClick={() => exportarParaExcel(table)}
-          style={{ display: "none" }}
-        >
-          Exportar Planilha
-        </Button>
+        <h1 className="text-2xl font-bold mb-6">Clientes</h1>
       </div>
-      <h1 className="text-2xl font-bold mb-6">Clientes</h1>
 
       <DataTable
         columns={columns}

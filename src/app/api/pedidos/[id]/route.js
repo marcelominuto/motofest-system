@@ -152,7 +152,7 @@ export async function DELETE(req, context) {
           <div style="font-family: Arial, sans-serif; background: #f7f7f7; padding: 0; margin: 0;">
             <div style="max-width: 520px; margin: 32px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 12px #0002; padding: 0 0 32px 0; overflow: hidden;">
               <div style="background: #d32f2f; padding: 32px 0 16px 0; text-align: center;">
-                <img src="https://SEUDOMINIO.com.br/logo-smf.png" alt="MotoFest" style="height: 56px; margin-bottom: 8px;" />
+                <img src="https://drive.google.com/uc?export=view&id=1MT9iMz0_1H5MuSSlvjfTwrDpnCfi5Xuj" alt="MotoFest" style="height: 56px; margin-bottom: 8px;" />
                 <div style="color: #fff; font-size: 1.2rem; letter-spacing: 1px;">A sua experiência real começa aqui</div>
               </div>
               <div style="padding: 32px 32px 0 32px;">

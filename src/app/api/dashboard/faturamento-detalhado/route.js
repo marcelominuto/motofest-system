@@ -32,10 +32,17 @@ export async function GET() {
     });
 
     if (!eventoAtivo) {
-      return NextResponse.json({ total: 0 });
+      return NextResponse.json({
+        faturamentoPedidos: 0,
+        faturamentoAgendamentosDiretos: 0,
+        quantidadePedidos: 0,
+        quantidadeAgendamentosDiretos: 0,
+        quantidadeCortesias: 0,
+        clientesComAgendamentosDiretos: 0,
+      });
     }
 
-    // 1. Faturamento de pedidos pagos
+    // 1. Pedidos pagos
     const pedidos = await prisma.pedido.findMany({
       where: {
         status: "pago",
@@ -51,7 +58,7 @@ export async function GET() {
       return sum + valor;
     }, 0);
 
-    // 2. Faturamento de agendamentos diretos (sem pedido vinculado)
+    // 2. Agendamentos diretos (sem pedido vinculado)
     const agendamentosDiretos = await prisma.agendamento.findMany({
       where: {
         eventoId: eventoAtivo.id,
@@ -100,26 +107,31 @@ export async function GET() {
       return sum + valor;
     }, 0);
 
-    // 3. Total do faturamento
-    const total = faturamentoPedidos + faturamentoAgendamentosDiretos;
+    // 3. Contar cortesias
+    const cortesias = await prisma.agendamento.count({
+      where: {
+        eventoId: eventoAtivo.id,
+        status: "cortesia",
+      },
+    });
 
     return NextResponse.json({
-      total,
       faturamentoPedidos,
       faturamentoAgendamentosDiretos,
-      quantidadeAgendamentosDiretos: agendamentosDiretos.length,
       quantidadePedidos: pedidos.length,
+      quantidadeAgendamentosDiretos: agendamentosDiretos.length,
+      quantidadeCortesias: cortesias,
       clientesComAgendamentosDiretos: Object.keys(agendamentosPorCliente)
         .length,
     });
   } catch (error) {
-    console.error("Erro ao buscar faturamento:", error);
+    console.error("Erro ao buscar faturamento detalhado:", error);
     return NextResponse.json({
-      total: 0,
       faturamentoPedidos: 0,
       faturamentoAgendamentosDiretos: 0,
-      quantidadeAgendamentosDiretos: 0,
       quantidadePedidos: 0,
+      quantidadeAgendamentosDiretos: 0,
+      quantidadeCortesias: 0,
       clientesComAgendamentosDiretos: 0,
     });
   }

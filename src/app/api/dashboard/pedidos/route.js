@@ -16,7 +16,10 @@ export async function GET() {
     }
 
     const total = await prisma.pedido.count({
-      where: { eventoId: eventoAtivo.id },
+      where: {
+        eventoId: eventoAtivo.id,
+        status: "pago", // Apenas pedidos pagos
+      },
     });
 
     return NextResponse.json({ total });

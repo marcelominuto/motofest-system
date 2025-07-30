@@ -148,7 +148,7 @@ export default function MobilidadeAdminPage() {
 
   return (
     <div className="p-6">
-      <div className="mb-4 flex flex-wrap gap-2 justify-between items-center">
+      <div className="mb-4 flex flex-wrap gap-2 items-center">
         <Button
           className="bg-red-600 hover:bg-red-700 text-white"
           onClick={() => setCreateOpen(true)}
