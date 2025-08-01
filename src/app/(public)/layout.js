@@ -13,7 +13,6 @@ export default function PublicLayout({ children }) {
     { href: "/motos", label: "Motos" },
     { href: "/agenda", label: "Agenda" },
     { href: "/faq", label: "FAQ" },
-    { href: "/teste-email", label: "🧪 Teste Email" },
   ];
   return (
     <div className="min-h-screen flex flex-col">
@@ -103,13 +102,6 @@ export default function PublicLayout({ children }) {
                 onClick={() => setMenuOpen(false)}
               >
                 FAQ
-              </Link>
-              <Link
-                href="/teste-email"
-                className="text-white text-lg font-bold uppercase tracking-wide hover:text-red-600 transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                🧪 Teste Email
               </Link>
             </nav>
           </div>

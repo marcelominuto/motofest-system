@@ -16,6 +16,7 @@ import {
   ShoppingBag,
   LogOut,
   TrafficCone,
+  Mail,
 } from "lucide-react";
 
 const navItems = [
@@ -73,6 +74,11 @@ const navItems = [
     label: "Pedidos",
     href: "/admin/pedidos",
     icon: <ShoppingBag className="w-5 h-5 mr-2" />,
+  },
+  {
+    label: "Email",
+    href: "/admin/email",
+    icon: <Mail className="w-5 h-5 mr-2" />,
   },
   {
     label: "Sair",

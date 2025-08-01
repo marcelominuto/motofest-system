@@ -506,19 +506,19 @@ export async function POST(req) {
         try {
           await sendEmail({
             to: order.customer.email,
-            subject: `Seu pedido MotoFest foi confirmado! [${pedido.codigo}]`,
+            subject: `Você vai pilotar no Salão Moto Fest! Prepare-se para o grande dia [${pedido.codigo}]`,
             html: `
               <div style="font-family: Arial, sans-serif; background: #f7f7f7; padding: 0; margin: 0;">
                 <div style="max-width: 520px; margin: 32px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 12px #0002; padding: 0 0 32px 0; overflow: hidden;">
-                  <div style="background: #d32f2f; padding: 32px 0 16px 0; text-align: center;">
+                  <div style="background: #e3180a; padding: 32px 0 16px 0; text-align: center;">
                     <img src="https://drive.google.com/uc?export=view&id=1YAsgLtQ8M5mYsGWYl-IOzqQwpIhdX80J" alt="MotoFest" style="height: 56px; margin-bottom: 8px;" />
                     <div style="color: #fff; font-size: 1.2rem; letter-spacing: 1px;">A sua experiência real começa aqui</div>
                   </div>
                   <div style="padding: 32px 32px 0 32px;">
-                    <h2 style="color: #d32f2f; font-size: 1.3rem; margin-bottom: 8px;">Olá, <b>${order.customer.name}</b>!</h2>
-                    <p style="font-size: 1.1rem; color: #222; margin-bottom: 16px;">Sua compra para o MotoFest foi realizada com sucesso!<br>Leve este e-mail e seu documento no dia do evento.</p>
-                    <div style="border-top: 2px solid #d32f2f; margin: 24px 0 16px 0;"></div>
-                    <h3 style="color: #d32f2f; font-size: 1.1rem; margin-bottom: 8px;">Resumo da compra</h3>
+                    <h2 style="color: #e3180a; font-size: 1.3rem; margin-bottom: 8px;">Olá, <b>${order.customer.name}</b>!</h2>
+                    <p style="font-size: 1.1rem; color: #222; margin-bottom: 16px;">Sua compra para o Salão Moto Fest foi realizada com sucesso!<br>Leve este e-mail e seu documento no dia do evento.</p>
+                    <div style="border-top: 2px solid #e3180a; margin: 24px 0 16px 0;"></div>
+                    <h3 style="color: #e3180a; font-size: 1.1rem; margin-bottom: 8px;">Resumo da compra</h3>
                     <table style="width:100%; border-collapse:collapse; margin-bottom: 16px;">
                       <thead>
                         <tr style="background:#f2f2f2; color:#222;">
@@ -562,7 +562,7 @@ export async function POST(req) {
                     </div>
                     
                     <div style="margin: 32px 0 0 0; padding: 24px 24px 16px 24px; background: #f9f9f9; border-radius: 8px;">
-                      <h3 style="color: #d32f2f; font-size: 1.1rem; margin-bottom: 10px;">O que levar no dia do evento</h3>
+                      <h3 style="color: #e3180a; font-size: 1.1rem; margin-bottom: 10px;">O que levar no dia do evento</h3>
                       <ul style="color: #222; font-size: 1rem; margin-bottom: 16px; padding-left: 20px;">
                         <li>✔️ Este e-mail de confirmação (impresso ou no celular)</li>
                         <li>✔️ Documento oficial com foto (RG ou CNH)</li>
@@ -570,31 +570,34 @@ export async function POST(req) {
                         <li>✔️ Equipamentos de segurança obrigatórios:<br>
                           &nbsp;&nbsp;- Capacete fechado<br>
                           &nbsp;&nbsp;- Jaqueta de manga longa<br>
-                          &nbsp;&nbsp;- Calça comprida<br>
-                          &nbsp;&nbsp;- Calçado fechado
+                          &nbsp;&nbsp;- Calça comprida (jeans,couro ou cordura)<br>
+                          &nbsp;&nbsp;- Calçado fechado<br>
+                          &nbsp;&nbsp;- Luvas (recomendado)
                         </li>
                       </ul>
-                      <div style="color: #d32f2f; font-size: 0.98rem; margin-bottom: 10px;">
-                        ⚠️ Participantes que não estiverem com os itens exigidos não poderão realizar o test ride por motivos de segurança.
+                      <div style="color: #e3180a; font-size: 0.98rem; margin-bottom: 10px;">
+                        ⚠️ <strong>NÃO SÃO ACEITOS:</strong> capacete aberto, roupas de moletom, corta vento, legging e jeans desfiado ou com aberturas. A falta de qualquer equipamento impedirá a participação no Test Ride.
                       </div>
-                      <h3 style="color: #d32f2f; font-size: 1.1rem; margin-bottom: 10px;">Termos de participação</h3>
+                      <h3 style="color: #e3180a; font-size: 1.1rem; margin-bottom: 10px;">Termos de participação</h3>
                       <ul style="color: #222; font-size: 1rem; margin-bottom: 0; padding-left: 20px;">
                         <li>📄 O ingresso é nominal e intransferível</li>
-                        <li>⏰ Chegue com no mínimo 15 minutos de antecedência do seu horário agendado</li>
-                        <li>🚫 A apresentação de prints ou fotografias do ingresso não será aceita</li>
+                        <li>⏰ Chegue com no mínimo 1 hora de antecedência do seu horário agendado</li>
                         <li>❗ Em caso de atraso ou ausência, o agendamento poderá ser cancelado sem reembolso</li>
                         <li>🌧️ O test ride está sujeito às condições climáticas e de pista no momento do evento</li>
                         <li>🔧 A organização se reserva o direito de alterar modelos disponíveis em caso de imprevistos mecânicos ou logísticos</li>
+                        <li>🚫 Não será tolerado o consumo de bebida alcoólica ou substâncias ilícitas</li>
+                        <li>📋 A participação no briefing é obrigatória</li>
+                        <li>🛡️ O participante deve seguir todas as regras de segurança e conduta dos instrutores</li>
                       </ul>
                     </div>
-                    <div style="font-size: 0.95rem; color: #d32f2f; margin-top: 16px;">
+                    <div style="font-size: 0.95rem; color: #e3180a; margin-top: 16px;">
                       <b>Atenção:</b> O ingresso é nominal e válido apenas com documento oficial.<br/>
                       Não compartilhe este e-mail. Dúvidas? Fale com a organização.
                     </div>
                   </div>
                   <div style="border-top: 1px solid #eee; margin: 32px 0 0 0; padding: 16px 32px 0 32px; text-align: center;">
                     <span style="font-size: 1rem; color: #222;">Siga o MotoFest:</span><br/>
-                    <a href="https://wa.me/5551992485757" style="display:inline-block; margin: 8px 12px 0 0;"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="height:28px; vertical-align:middle;" /></a>
+                    <a href="https://wa.me/5551992485757" style="display:inline-block; margin: 8px 12px 0 0;"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg.png" alt="WhatsApp" style="height:28px; vertical-align:middle;" /></a>
                     <a href="https://instagram.com/salaodemotos" style="display:inline-block; margin: 8px 0 0 0;"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" style="height:28px; vertical-align:middle;" /></a>
                   </div>
                 </div>

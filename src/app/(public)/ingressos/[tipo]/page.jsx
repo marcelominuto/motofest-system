@@ -812,7 +812,7 @@ export default function DetalheIngressoPage() {
                 4. Em caso de arrependimento da compra, o participante poderá
                 solicitar o cancelamento e reembolso em até 7 (sete) dias
                 corridos após a confirmação do pagamento, desde que o pedido
-                seja feito com pelo menos 72 horas de antecedência ao início do
+                seja feito com pelo menos 48 horas de antecedência ao início do
                 evento, conforme previsto no Código de Defesa do Consumidor.
                 <br />
                 5. Após esse prazo, não serão aceitos pedidos de reembolso,

@@ -16,24 +16,9 @@ export default function AgendaPage() {
       date: "31 DE OUTUBRO",
       activities: [
         {
-          time: "08:00 - 17:00",
-          title: "TESTE RIDE",
-          description: "Experiência de pilotagem com as melhores motos",
-        },
-        {
-          time: "08:00 - 20:00",
-          title: "BOULEVARD & PADDOCK",
-          description: "Exposição de motos e área de convivência",
-        },
-        {
           time: "10:00 - 20:00",
-          title: "PISTA DE HABILIDADE",
-          description: "Teste suas habilidades em circuito especializado",
-        },
-        {
-          time: "11:00 e 15:00",
-          title: "GLOBO DA MORTE",
-          description: "Show de acrobacias motociclísticas",
+          title: "EM BREVE",
+          description: "Programação completa será divulgada em breve",
         },
       ],
     },
@@ -42,29 +27,9 @@ export default function AgendaPage() {
       date: "01 DE NOVEMBRO",
       activities: [
         {
-          time: "08:00 - 17:00",
-          title: "TESTE RIDE",
-          description: "Experiência de pilotagem com as melhores motos",
-        },
-        {
-          time: "08:00 - 20:00",
-          title: "BOULEVARD & PADDOCK",
-          description: "Exposição de motos e área de convivência",
-        },
-        {
-          time: "11:00 - 19:00",
-          title: "TIROLESA",
-          description: "Aventura suspensa com vista panorâmica",
-        },
-        {
-          time: "11:00 - 23:00",
-          title: "RODA GIGANTE",
-          description: "Diversão para toda a família",
-        },
-        {
-          time: "15:00",
-          title: "SHOW ESPECIAL",
-          description: "Apresentação musical exclusiva",
+          time: "10:00 - 20:00",
+          title: "EM BREVE",
+          description: "Programação completa será divulgada em breve",
         },
       ],
     },
@@ -73,44 +38,9 @@ export default function AgendaPage() {
       date: "02 DE NOVEMBRO",
       activities: [
         {
-          time: "08:00 - 17:00",
-          title: "TESTE RIDE",
-          description: "Experiência de pilotagem com as melhores motos",
-        },
-        {
-          time: "08:00 - 20:00",
-          title: "BOULEVARD & PADDOCK",
-          description: "Exposição de motos e área de convivência",
-        },
-        {
-          time: "10:30 - 19:00",
-          title: "ARENA FREESTYLE",
-          description: "Show de acrobacias e manobras radicais",
-        },
-        {
-          time: "13:00 e 18:00",
-          title: "FORÇA E AÇÃO",
-          description: "Demonstrações de força e habilidade",
-        },
-        {
-          time: "18:00 - 00:00",
-          title: "LIVE ARENA",
-          description: "Música ao vivo e entretenimento",
-        },
-        {
-          time: "19:00",
-          title: "SHOW PRINCIPAL",
-          description: "Apresentação musical principal do evento",
-        },
-        {
-          time: "21:00",
-          title: "SHOW ESPECIAL",
-          description: "Apresentação musical especial",
-        },
-        {
-          time: "23:00",
-          title: "DJ SAMMI",
-          description: "Encerramento com música eletrônica",
+          time: "10:00 - 20:00",
+          title: "EM BREVE",
+          description: "Programação completa será divulgada em breve",
         },
       ],
     },

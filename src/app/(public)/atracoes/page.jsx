@@ -1,17 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Calendar,
-  MapPin,
-  Clock,
-  Users,
-  Music,
-  Car,
-  Zap,
-  Baby,
-  Flame,
-} from "lucide-react";
+import { Music, Car, Zap, Flame } from "lucide-react";
 
 export default function AtracoesPage() {
   const atracoes = [
@@ -21,30 +11,21 @@ export default function AtracoesPage() {
       description:
         "As principais marcas de motocicletas se reúnem para mostrar modelos icônicos, lançamentos exclusivos e inovações que representam o futuro das duas rodas. De design a performance, tudo sobre experiências.",
       icon: Car,
-      image: "/exposicoes.jpg",
+      image: "/exposicoes.jpeg",
       color: "bg-gradient-to-br from-red-600 to-red-800",
     },
     {
       id: 2,
-      title: "MUSEU DA MOTO",
-      description:
-        "Uma viagem no tempo sobre duas rodas. Relíquias, modelos raros e clássicos que contam a história do motociclismo. Um espaço especial para reviver memórias e se conectar com a essência das máquinas que marcaram gerações.",
-      icon: MapPin,
-      image: "/museu.jpg",
-      color: "bg-gradient-to-br from-orange-600 to-orange-800",
-    },
-    {
-      id: 3,
       title: "SHOWS",
       description:
         "O ritmo do Moto Fest Tarumã também estará no palco! Shows ao vivo com bandas que trazem atitude, energia e personalidade durante os quatro dias. 'Os Daltons', 'Classic Riders' e 'QNOME' prometem uma mistura de rock, clássico e música autoral para completar a 'vibe acelerada' do evento.",
       icon: Music,
-      image: "/shows.jpg",
+      image: "/shows.jpeg",
       color: "bg-gradient-to-br from-purple-600 to-purple-800",
     },
     {
-      id: 4,
-      title: "MOTO FEST TARUMÃ",
+      id: 3,
+      title: "PISTA DE TARUMÃ",
       description:
         "A lendária pista Tarumã oferece uma experiência além da velocidade. Acelere como nunca antes, sinta cada curva e viva o verdadeiro espírito das pistas. Uma chance única de pilotar em uma das pistas mais emblemáticas do país, no ritmo do maior evento motociclístico do ano.",
       icon: Zap,
@@ -52,40 +33,22 @@ export default function AtracoesPage() {
       color: "bg-gradient-to-br from-blue-600 to-blue-800",
     },
     {
-      id: 5,
-      title: "OFF-ROAD",
+      id: 4,
+      title: "PISTA OFF-ROAD",
       description:
         "Prepare-se para desafios off-road! A pista off-road do Moto Fest Tarumã foi projetada para entusiastas da aventura testarem seus limites em terrenos irregulares, subidas, descidas e obstáculos naturais. Uma experiência imersiva que conecta diretamente com a essência crua, suja, intensa e cheia de adrenalina do motociclismo.",
       icon: Flame,
-      image: "/offroad.jpg",
+      image: "/trail-pass.jpg",
       color: "bg-gradient-to-br from-green-600 to-green-800",
     },
     {
-      id: 6,
+      id: 5,
       title: "MOBILIDADE URBANA",
       description:
         "Tecnologia, praticidade e uma nova forma de se mover. A pista de mobilidade urbana é o espaço ideal para experimentar motocicletas e scooters elétricos em um percurso projetado para simular o trajeto diário pelas ruas. Uma oportunidade de conhecer soluções que estão transformando o trânsito urbano com conforto, silêncio e sustentabilidade.",
       icon: Zap,
-      image: "/mobilidade.jpg",
+      image: "/pista-mobilidade.jpg",
       color: "bg-gradient-to-br from-teal-600 to-teal-800",
-    },
-    {
-      id: 7,
-      title: "EQUIPE SÓ ZERINHO",
-      description:
-        "Manobras radicais, controle absoluto e alta adrenalina. A equipe Só Zerinho vai eletrizar o público com um show eletrizante de acrobacias e equilíbrio sobre duas rodas. Um espetáculo que mistura técnica, ousadia e paixão pelo motociclismo, provando que pilotar também é uma arte.",
-      icon: Flame,
-      image: "/zerinho.jpg",
-      color: "bg-gradient-to-br from-red-500 to-red-700",
-    },
-    {
-      id: 8,
-      title: "ESPAÇO KIDS",
-      description:
-        "Diversão garantida para as crianças enquanto os adultos aproveitam o evento. O Espaço Kids foi pensado com carinho para proporcionar momentos de lazer, brincadeiras seguras e atividades para as crianças. Um ambiente alegre, lúdico e supervisionado onde a diversão dura o dia todo.",
-      icon: Baby,
-      image: "/kids.jpg",
-      color: "bg-gradient-to-br from-pink-600 to-pink-800",
     },
   ];
 
@@ -117,13 +80,18 @@ export default function AtracoesPage() {
                 >
                   <div
                     className={`h-48 ${atracao.color} relative overflow-hidden`}
+                    style={{
+                      backgroundImage: `url(${atracao.image})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
                   >
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300"></div>
-                    <div className="absolute top-4 right-4">
-                      <IconComponent className="w-8 h-8 text-white" />
-                    </div>
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300"></div>
                     <div className="absolute bottom-4 left-4">
-                      <h3 className="text-white font-bold text-xl">
+                      <h3
+                        className="text-white font-bold text-2xl"
+                        style={{ fontFamily: "Anton, sans-serif" }}
+                      >
                         {atracao.title}
                       </h3>
                     </div>

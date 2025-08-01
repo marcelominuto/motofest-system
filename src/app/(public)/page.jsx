@@ -177,7 +177,6 @@ export default function HomePage() {
           }
         />
       </section>
-
       {/* Chamada para cadastro com desconto - visual sóbrio e integrado */}
       <section className="w-full flex justify-center bg-black pb-12 px-2 md:px-0">
         <div
