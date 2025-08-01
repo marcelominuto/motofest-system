@@ -299,14 +299,35 @@ export async function POST(req) {
           username: "SALÃO MOTO FEST",
           avatar_url: "https://i.ibb.co/YBC3HZtG/LOGO.png",
         };
-        await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/discord`,
-          {
+        const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+        if (discordWebhookUrl) {
+          const protocol = req.headers.get('x-forwarded-proto') || 'http';
+          const host = req.headers.get('host') || 'localhost:3000';
+          const baseUrl = `${protocol}://${host}`;
+          
+          await fetch(discordWebhookUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(discordPayload),
-          }
-        );
+            body: JSON.stringify({
+              embeds: [
+                {
+                  title: "🎫 Novo Pedido Recebido",
+                  color: 0x00ff00,
+                  fields: [
+                    { name: "Cliente", value: cliente.nome, inline: true },
+                    { name: "Email", value: cliente.email, inline: true },
+                    { name: "CPF", value: cliente.cpf, inline: true },
+                    { name: "Ingresso", value: metadata.tipo || "-", inline: true },
+                    { name: "Valor", value: `R$ ${valor}`, inline: true },
+                    { name: "Status", value: "Pago", inline: true },
+                  ],
+                  footer: { text: "Salão Moto Fest 2025" },
+                  timestamp: new Date().toISOString(),
+                },
+              ],
+            }),
+          });
+        }
       } catch (err) {
         console.error("Erro ao enviar webhook para Discord:", err);
       }

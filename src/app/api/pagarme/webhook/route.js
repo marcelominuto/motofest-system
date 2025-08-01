@@ -698,14 +698,14 @@ export async function POST(req) {
             username: "SALÃO MOTO FEST",
             avatar_url: "https://i.ibb.co/YBC3HZtG/LOGO.png",
           };
-          await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/discord`,
-            {
+          const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+          if (discordWebhookUrl) {
+            await fetch(discordWebhookUrl, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(discordPayload),
-            }
-          );
+            });
+          }
         } catch (err) {
           console.error("Erro ao enviar webhook para Discord:", err);
         }

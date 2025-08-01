@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { PrismaClient } from "@prisma/client";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-10-16",
-});
+const prisma = new PrismaClient();
 
 function formatarDataBR(dataISO) {
   if (!dataISO) return "";
@@ -14,89 +13,59 @@ function formatarDataBR(dataISO) {
 }
 
 export async function POST(req) {
-  const body = await req.json();
-  const {
-    nome,
-    email,
-    cpf, // <-- Adicionado cpf
-    valor,
-    quantidade,
-    ingressoId,
-    tipo,
-    descricao,
-    detalhesAgendamento,
-    agendamento,
-    telefone, // <-- Adicionado telefone
-  } = body;
-
-  console.log("Body recebido na criação de sessão Stripe:", body); // Log para depuração
-
-  if (!nome || !email || !valor || !quantidade || !ingressoId) {
-    return NextResponse.json(
-      { error: "Dados obrigatórios faltando" },
-      { status: 400 }
-    );
-  }
-
-  // Nome do produto: nome do ingresso (tipo) e quantidade de motos
-  const nomeProduto = `${tipo} - ${quantidade} Moto${
-    quantidade > 1 ? "s" : ""
-  }`;
-
-  // Resumo: cada moto em uma nova linha
-  let resumo = "";
   try {
-    const ags = Array.isArray(agendamento)
-      ? agendamento
-      : JSON.parse(agendamento || "[]");
-    resumo = ags
-      .map(
-        (m, idx) =>
-          `Moto ${idx + 1}: ${m.modelo || m.motoId}, Data: ${formatarDataBR(
-            m.data
-          )}, Horário: ${m.horario || m.horarioId}`
-      )
-      .join(" | ");
-  } catch {
-    resumo = detalhesAgendamento || "";
-  }
+    const { ingressoId, clienteId } = await req.json();
 
-  try {
+    // Pegar o domínio baseado no request
+    const protocol = req.headers.get('x-forwarded-proto') || 'http';
+    const host = req.headers.get('host') || 'localhost:3000';
+    const baseUrl = `${protocol}://${host}`;
+
+    const cliente = await prisma.cliente.findUnique({
+      where: { id: clienteId },
+    });
+
+    if (!cliente) {
+      return NextResponse.json({ error: "Cliente não encontrado" }, { status: 404 });
+    }
+
+    const ingresso = await prisma.ingresso.findUnique({
+      where: { id: ingressoId },
+    });
+
+    if (!ingresso) {
+      return NextResponse.json({ error: "Ingresso não encontrado" }, { status: 404 });
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      mode: "payment",
-      customer_email: email,
       line_items: [
         {
           price_data: {
             currency: "brl",
             product_data: {
-              name: nomeProduto,
-              description: resumo,
+              name: ingresso.tipo,
+              description: ingresso.descricao || `Ingresso ${ingresso.tipo}`,
             },
-            unit_amount: Math.round(Number(valor) * 100),
+            unit_amount: Math.round(ingresso.valor * 100),
           },
-          quantity: 1, // Valor já é o total, não unitário
+          quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/ingressos/sucesso?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/ingressos/`,
+      mode: "payment",
+      success_url: `${baseUrl}/ingressos/sucesso?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/ingressos/`,
       metadata: {
-        ingressoId,
-        nome,
-        email,
-        cpf, // <-- Adicionado cpf ao metadata
-        telefone, // <-- Adicionado telefone ao metadata
-        detalhesAgendamento: detalhesAgendamento || "",
-        agendamento: agendamento ? JSON.stringify(agendamento) : "",
+        clienteId: clienteId.toString(),
+        ingressoId: ingressoId.toString(),
       },
     });
-    return NextResponse.json({ url: session.url });
+
+    return NextResponse.json({ sessionId: session.id });
   } catch (error) {
-    console.error("Erro ao criar sessão Stripe:", error);
-    return NextResponse.json(
-      { error: "Erro ao criar sessão de pagamento" },
-      { status: 500 }
-    );
+    console.error("Erro ao criar sessão de checkout:", error);
+    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
   }
 }
