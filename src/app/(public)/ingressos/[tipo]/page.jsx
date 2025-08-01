@@ -483,38 +483,7 @@ export default function DetalheIngressoPage() {
             </li>
             <li className="flex items-center gap-2">
               <span className="text-green-600 text-xl">✓</span>
-              <span className="text-white">
-                Apresentações radicais de freestyle, manobras de wheeling e show
-                da equipe Só Zerinho
-              </span>
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-green-600 text-xl">✓</span>
               <span className="text-white">Pista de Mobilidade Urbana</span>
-            </li>
-          </ul>
-
-          <h3 className="font-bold mt-6 text-white">
-            Acesso aos shows musicais:
-          </h3>
-          <ul className="list-none space-y-2">
-            <li className="flex items-center gap-2">
-              <span className="text-red-600 text-xl">🎵</span>
-              <span className="text-white">Quinta: QNOME | Os Daltons</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-red-600 text-xl">🎵</span>
-              <span className="text-white">Sexta: Classic Riders</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-red-600 text-xl">🎵</span>
-              <span className="text-white">Sábado: QNOME | Os Daltons</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-red-600 text-xl">🎵</span>
-              <span className="text-white">
-                Domingo: QNOME | Classic Riders
-              </span>
             </li>
           </ul>
 
@@ -528,7 +497,7 @@ export default function DetalheIngressoPage() {
               Horário de funcionamento:
             </h4>
             <p className="text-sm text-white">
-              <strong>Geral:</strong> 10h às 22h | Entrada limite até as 21h
+              <strong>Geral:</strong> 10h às 20h | Entrada limite até as 19h
               <br />
               <strong>Test rides:</strong> 10h às 18h
             </p>
