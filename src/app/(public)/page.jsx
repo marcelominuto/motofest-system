@@ -30,7 +30,7 @@ export default function HomePage() {
   const banners = [
     { id: 1, desktop: "/banner1.png", mobile: "/banner1-mobile.png" },
     { id: 2, desktop: "/banner2.png", mobile: "/banner2-mobile.png" },
-    { id: 3, desktop: "/banner3.png", mobile: "/banner3-mobile.png" },
+    { id: 3, desktop: "/banner4.png", mobile: "/banner4-mobile.png" },
   ];
   const [current, setCurrent] = useState(0);
   const nextSlide = () => setCurrent((prev) => (prev + 1) % banners.length);

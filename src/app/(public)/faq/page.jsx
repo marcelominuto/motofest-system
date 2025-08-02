@@ -156,10 +156,7 @@ export default function FAQPage() {
                   onClick={() => toggleAccordion(index)}
                   className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-[#333] transition-colors duration-200"
                 >
-                  <span
-                    className="text-white font-semibold text-3xl uppercase"
-                    style={{ fontFamily: "Anton, sans-serif" }}
-                  >
+                  <span className="text-white font-semibold text-3xl uppercase">
                     {faq.question}
                   </span>
                   {openAccordion === index ? (
