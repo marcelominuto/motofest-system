@@ -245,12 +245,44 @@ export default function DetalheIngressoPage() {
     return horario ? horario.hora : id;
   };
 
+  // Função para validar CPF
+  const validarCPF = (cpf) => {
+    // Remove caracteres não numéricos
+    cpf = cpf.replace(/\D/g, "");
+
+    // Verifica se tem 11 dígitos
+    return cpf.length === 11;
+  };
+
+  // Função para validar telefone
+  const validarTelefone = (telefone) => {
+    // Remove caracteres não numéricos
+    const numero = telefone.replace(/\D/g, "");
+
+    // Verifica se tem entre 10 e 11 dígitos (com DDD)
+    return numero.length >= 10 && numero.length <= 11;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.aceiteTermos) {
       alert("Você deve aceitar os termos para continuar.");
       return;
     }
+
+    // VALIDAÇÃO DE CPF E TELEFONE
+    if (!validarCPF(formData.cpf)) {
+      alert("CPF inválido. Por favor, verifique o número informado.");
+      return;
+    }
+
+    if (!validarTelefone(formData.telefone)) {
+      alert(
+        "Telefone inválido. Por favor, verifique o número informado (incluindo DDD)."
+      );
+      return;
+    }
+
     setSubmitting(true);
     try {
       // 1. Cadastrar/buscar cliente

@@ -6,6 +6,16 @@ import { sendEmail } from "@/lib/sendEmail";
 
 export const runtime = "nodejs";
 
+// Função para verificar se o pagamento foi realmente aprovado
+function verificarPagamentoAprovado(order) {
+  // Verificar se o pedido está pago
+  if (order.status !== "paid") {
+    return false;
+  }
+
+  return true;
+}
+
 export async function POST(req) {
   try {
     const body = await req.text();
@@ -27,13 +37,25 @@ export async function POST(req) {
     // Processar eventos de pagamento
     console.log("Tipo de evento recebido:", data.type);
 
-    if (data.type === "order.paid" || data.type === "order.payment_failed") {
+    // Processar eventos de pagamento
+    if (data.type === "order.paid") {
       const order = data.data;
       console.log("Pedido encontrado:", order.id);
       console.log("Status do pedido:", order.status);
       console.log("Metadata do pedido:", order.metadata);
       console.log("Charges do pedido:", order.charges);
       console.log("Dados completos do pedido:", JSON.stringify(order, null, 2));
+
+      // VALIDAÇÃO: Verificar se o pagamento foi realmente aprovado
+      if (!verificarPagamentoAprovado(order)) {
+        console.log("❌ Pagamento não foi aprovado. Status:", order.status);
+        return NextResponse.json({
+          error: "Pagamento não aprovado",
+          status: order.status,
+        });
+      }
+
+      console.log("✅ Pagamento aprovado - processando pedido");
 
       // Como o metadata não está chegando, vamos usar os dados do cliente do webhook
       const codigoPedido = `SMF#${Math.floor(Math.random() * 9000) + 1000}`;
@@ -511,7 +533,7 @@ export async function POST(req) {
               <div style="font-family: Arial, sans-serif; background: #f7f7f7; padding: 0; margin: 0;">
                 <div style="max-width: 520px; margin: 32px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 12px #0002; padding: 0 0 32px 0; overflow: hidden;">
                   <div style="background: #e3180a; padding: 32px 0 16px 0; text-align: center;">
-                    <img src="https://drive.google.com/uc?export=view&id=1YAsgLtQ8M5mYsGWYl-IOzqQwpIhdX80J" alt="MotoFest" style="height: 56px; margin-bottom: 8px;" />
+                    <img src="https://drive.google.com/uc?export=view&id=1MT9iMz0_1H5MuSSlvjfTwrDpnCfi5Xuj" alt="MotoFest" style="height: 56px; margin-bottom: 8px;" />
                     <div style="color: #fff; font-size: 1.2rem; letter-spacing: 1px;">A sua experiência real começa aqui</div>
                   </div>
                   <div style="padding: 32px 32px 0 32px;">
@@ -714,6 +736,104 @@ export async function POST(req) {
       } else {
         console.log("Pedido já existe:", pedido.id);
       }
+    } else if (data.type === "order.payment_failed") {
+      // Log do evento de falha de pagamento
+      const order = data.data;
+      console.log("❌ EVENTO DE FALHA DE PAGAMENTO RECEBIDO");
+      console.log("Pedido ID:", order.id);
+      console.log("Status do pedido:", order.status);
+      console.log("NÃO PROCESSANDO - Pagamento falhou");
+
+      // Enviar webhook para Discord (FALHA DE PAGAMENTO)
+      try {
+        const discordPayload = {
+          content: "",
+          tts: false,
+          embeds: [
+            {
+              title: "❌ FALHA DE PAGAMENTO",
+              color: 15158332, // Vermelho
+              timestamp: new Date().toISOString(),
+              fields: [
+                {
+                  name: "Nome",
+                  value: order.customer?.name || "N/A",
+                  inline: true,
+                },
+                {
+                  name: "CPF",
+                  value: order.customer?.document
+                    ? order.customer.document.replace(
+                        /(\d{3})(\d{3})(\d{3})(\d{2})/,
+                        "$1.$2.$3-$4"
+                      )
+                    : "N/A",
+                },
+                {
+                  name: "E-mail",
+                  value: order.customer?.email || "N/A",
+                },
+                {
+                  name: "Valor",
+                  value: `R$ ${(order.amount / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+                },
+                {
+                  name: "Status",
+                  value: order.status,
+                },
+                {
+                  name: "Status do Pedido",
+                  value: order.status || "N/A",
+                },
+              ],
+            },
+          ],
+          components: [],
+          actions: {},
+          flags: 0,
+          username: "SALÃO MOTO FEST",
+          avatar_url: "https://i.ibb.co/YBC3HZtG/LOGO.png",
+        };
+
+        const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+        if (discordWebhookUrl) {
+          await fetch(discordWebhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(discordPayload),
+          });
+        }
+      } catch (err) {
+        console.error("Erro ao enviar webhook de falha para Discord:", err);
+      }
+    } else if (data.type === "order.canceled") {
+      // Log do evento de cancelamento
+      const order = data.data;
+      console.log("❌ EVENTO DE CANCELAMENTO RECEBIDO");
+      console.log("Pedido ID:", order.id);
+      console.log("Status do pedido:", order.status);
+      console.log("NÃO PROCESSANDO - Pedido cancelado");
+    } else if (data.type === "order.created") {
+      // Log do evento de criação
+      const order = data.data;
+      console.log("📝 EVENTO DE CRIAÇÃO RECEBIDO");
+      console.log("Pedido ID:", order.id);
+      console.log("Status do pedido:", order.status);
+      console.log("NÃO PROCESSANDO - Pedido criado (aguardando pagamento)");
+    } else if (data.type === "order.updated") {
+      // Log do evento de atualização
+      const order = data.data;
+      console.log("🔄 EVENTO DE ATUALIZAÇÃO RECEBIDO");
+      console.log("Pedido ID:", order.id);
+      console.log("Status do pedido:", order.status);
+      console.log("NÃO PROCESSANDO - Pedido atualizado");
+    } else if (data.type === "order.closed") {
+      // Log do evento de fechamento
+      const order = data.data;
+      console.log("🔒 EVENTO DE FECHAMENTO RECEBIDO");
+      console.log("Pedido ID:", order.id);
+      console.log("Status do pedido:", order.status);
+      console.log("NÃO PROCESSANDO - Pedido fechado");
     }
 
     return NextResponse.json({ received: true });

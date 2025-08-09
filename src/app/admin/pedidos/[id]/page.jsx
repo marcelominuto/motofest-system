@@ -21,6 +21,7 @@ export default function PedidoDetalhePage() {
   const [erro, setErro] = useState("");
   const [cancelando, setCancelando] = useState(false);
   const [modalCancelar, setModalCancelar] = useState(false);
+  const [enviandoEmail, setEnviandoEmail] = useState(false);
 
   useEffect(() => {
     async function fetchPedido() {
@@ -55,6 +56,26 @@ export default function PedidoDetalhePage() {
       toast.error("Erro ao cancelar pedido");
     } finally {
       setCancelando(false);
+    }
+  };
+
+  const handleEnviarEmail = async () => {
+    setEnviandoEmail(true);
+    try {
+      const res = await fetch(`/api/pedidos/${id}/enviar-email`, {
+        method: "POST",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Erro ao enviar email");
+      }
+
+      toast.success("Email de confirmação enviado com sucesso!");
+    } catch (err) {
+      toast.error(err.message || "Erro ao enviar email");
+    } finally {
+      setEnviandoEmail(false);
     }
   };
 
@@ -111,7 +132,19 @@ export default function PedidoDetalhePage() {
           {pedido.metodoPagamento ? pedido.metodoPagamento.toUpperCase() : "-"}
         </div>
       </div>
-      <div className="mb-6">
+      <div className="mb-6 flex gap-2">
+        <Button
+          onClick={handleEnviarEmail}
+          disabled={
+            pedido.status === "cancelado" ||
+            enviandoEmail ||
+            !pedido.cliente?.email
+          }
+          className="bg-green-600 hover:bg-green-700"
+        >
+          {enviandoEmail ? "Enviando..." : "📧 Enviar Email de Confirmação"}
+        </Button>
+
         <Dialog open={modalCancelar} onOpenChange={setModalCancelar}>
           <DialogTrigger asChild>
             <Button
