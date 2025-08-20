@@ -46,8 +46,24 @@ export default function CadastroPage() {
     setForm((prev) => ({ ...prev, [name]: val }));
   };
 
+  // Função para validar CPF
+  const validarCPF = (cpf) => {
+    // Remove caracteres não numéricos
+    cpf = cpf.replace(/\D/g, "");
+
+    // Verifica se tem 11 dígitos
+    return cpf.length === 11;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // VALIDAÇÃO DE CPF
+    if (!validarCPF(form.cpf)) {
+      alert("CPF inválido. Por favor, verifique o número informado.");
+      return;
+    }
+
     setLoading(true);
     setErro("");
     try {
