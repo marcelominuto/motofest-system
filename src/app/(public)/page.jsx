@@ -30,7 +30,8 @@ export default function HomePage() {
   const banners = [
     { id: 1, desktop: "/banner1.png", mobile: "/banner1-mobile.png" },
     { id: 2, desktop: "/banner2.png", mobile: "/banner2-mobile.png" },
-    { id: 3, desktop: "/banner4.png", mobile: "/banner4-mobile.png" },
+    { id: 3, desktop: "/banner3.png", mobile: "/banner3-mobile.png" },
+    { id: 4, desktop: "/banner4.png", mobile: "/banner4-mobile.png" },
   ];
   const [current, setCurrent] = useState(0);
   const nextSlide = () => setCurrent((prev) => (prev + 1) % banners.length);
@@ -248,6 +249,52 @@ export default function HomePage() {
                 );
               })
           )}
+        </div>
+      </section>
+      {/* Seção onde ocorre */}
+      <section className="w-full flex justify-center bg-black py-6">
+        <div className="w-full max-w-5xl flex flex-col items-center px-2 md:px-0">
+          <div
+            className="bg-[#222] rounded-lg border border-red-700 p-6 w-full max-w-5xl"
+            style={{ boxShadow: "0 0 24px 0 rgba(220, 38, 38, 0.10)" }}
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="text-white"
+                  >
+                    <path
+                      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+                <h2
+                  className="text-white text-xl md:text-2xl font-extrabold"
+                  style={{ fontFamily: "Anton, sans-serif" }}
+                >
+                  ONDE OCORRE?
+                </h2>
+              </div>
+              <div className="bg-red-600 rounded-lg px-6 py-3 inline-block">
+                <p
+                  className="text-white text-lg md:text-xl font-bold"
+                  style={{ fontFamily: "Anton, sans-serif" }}
+                >
+                  AUTÓDROMO DE TARUMÃ
+                </p>
+              </div>
+              <p className="text-gray-200 text-sm md:text-base mt-3">
+                O maior complexo automobilístico do Rio Grande do Sul,
+                localizado em Viamão
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </>

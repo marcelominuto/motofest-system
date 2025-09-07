@@ -866,7 +866,6 @@ export default function DetalheIngressoPage() {
                 3. O acesso à área de Test Ride é permitido mediante
                 apresentação da credencial, entregue no evento. A credencial é
                 pessoal, intransferível e contém a lista das motos escolhidas.
-                Por segurança, não é permitido levar garupa.
                 <br />
                 4. O participante do Test Ride deverá se apresentar com
                 equipamento de segurança adequado: macacão ou jaqueta e calça
