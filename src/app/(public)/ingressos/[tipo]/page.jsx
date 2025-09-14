@@ -342,7 +342,7 @@ export default function DetalheIngressoPage() {
               {
                 id: 104269543,
                 name: "Telefone",
-                value: `${formData.telefone}\n[Whatsapp](<https://wa.me/${formData.telefone.replace(/\D/g, "")}>)`,
+                value: `${formData.telefone}\n[Whatsapp](<https://wa.me/55${formData.telefone.replace(/\D/g, "")}?text=Oi%2C%20tudo%20bem%3F%20Sou%20B%C3%A1rbara%20do%20suporte%20do%20Sal%C3%A3o%20Moto%20Fest.%20Vi%20que%20voc%C3%AA%20iniciou%20a%20compra%20do%20seu%20test%20ride%20no%20Sal%C3%A3o%20Moto%20Fest%20mas%20n%C3%A3o%20finalizou.%20Posso%20te%20ajudar%20a%20concluir%20e%20garantir%20sua%20vaga%3F>)`,
               },
               { id: 979321908, name: "Motos", value: motosString },
               { id: 123456789, name: "Tipo de Ingresso", value: ingresso.tipo },

@@ -127,7 +127,7 @@ export default function CadastroPage() {
           embeds: [
             {
               title: "NOVO CADASTRO DE DESCONTO!",
-              color: 1618943,
+              color: 12930047,
               timestamp: new Date().toISOString(),
               fields: [
                 { id: 477098321, name: "Nome", value: form.nome, inline: true },
@@ -136,7 +136,7 @@ export default function CadastroPage() {
                 {
                   id: 104269543,
                   name: "Telefone",
-                  value: `${form.telefone}\n[Whatsapp](<https://wa.me/${form.telefone.replace(/\D/g, "")}>)`,
+                  value: `${form.telefone}\n[Whatsapp](<https://wa.me/55${form.telefone.replace(/\D/g, "")}>)`,
                 },
               ],
             },

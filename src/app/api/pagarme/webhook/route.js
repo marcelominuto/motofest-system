@@ -698,7 +698,7 @@ export async function POST(req) {
                   {
                     id: 104269543,
                     name: "Telefone",
-                    value: `(${order.customer.phones.mobile_phone.area_code}) ${order.customer.phones.mobile_phone.number.replace(/(\d{4})(\d{4})/, "$1-$2")}\n[Whatsapp](<https://wa.me/${order.customer.phones.mobile_phone.area_code}${order.customer.phones.mobile_phone.number}>)`,
+                    value: `(${order.customer.phones.mobile_phone.area_code}) ${order.customer.phones.mobile_phone.number.replace(/(\d{4})(\d{4})/, "$1-$2")}\n[Whatsapp](<https://wa.me/55${order.customer.phones.mobile_phone.area_code}${order.customer.phones.mobile_phone.number}>)`,
                   },
                   { id: 979321908, name: "Motos", value: motosString },
                   {
