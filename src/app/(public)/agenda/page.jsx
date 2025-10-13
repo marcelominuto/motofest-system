@@ -16,9 +16,64 @@ export default function AgendaPage() {
       date: "31 DE OUTUBRO",
       activities: [
         {
-          time: "10:00 - 20:00",
-          title: "EM BREVE",
-          description: "Programação completa será divulgada em breve",
+          time: "09:30",
+          title: "ABERTURA DO COMPLEXO TARUMÃ AO PÚBLICO",
+          description: "Abertura oficial do evento",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DA PISTA PARA IMPRENSA E CONVIDADOS E TESTE RIDE",
+          description: "Acesso exclusivo para imprensa e convidados",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DAS PISTA OFF ROAD (CURSOS E TESTE RIDE)",
+          description: "Início das atividades OFF Road",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DA PRAÇA DE ALIMENTAÇÃO",
+          description: "Praça de alimentação disponível",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DA FEIRA DE EXPOSITORES AO PÚBLICO",
+          description: "Feira de expositores aberta ao público",
+        },
+        {
+          time: "12:00",
+          title: "APRESENTAÇÃO SIMULANDO UMA CORRIDA DE MOTOS NA PISTA",
+          description: "Equipe do piloto Carlos Barcelos (5 a 8 min)",
+        },
+        {
+          time: "12:15",
+          title: "PARADA PARA ALMOÇO E DESCANSO DOS PILOTOS",
+          description: "Intervalo para almoço",
+        },
+        {
+          time: "13:00",
+          title: "INÍCIO DOS TEST RIDE E DEMAIS PISTAS",
+          description: "Test rides disponíveis para o público",
+        },
+        {
+          time: "17:00",
+          title: "SHOW CRIS COLTO - ACÚSTICO",
+          description: "Apresentação musical",
+        },
+        {
+          time: "18:00",
+          title: "SHOW BANDA CLASSIC RIDERS",
+          description: "Apresentação da banda Classic Riders",
+        },
+        {
+          time: "18:00",
+          title: "FIM DOS TEST RIDE NAS PISTAS",
+          description: "Encerramento dos test rides",
+        },
+        {
+          time: "20:00",
+          title: "ENCERRAMENTO DO DIA DO SALÃO MOTOFEST TARUMÃ",
+          description: "Fim das atividades do dia",
         },
       ],
     },
@@ -27,9 +82,59 @@ export default function AgendaPage() {
       date: "01 DE NOVEMBRO",
       activities: [
         {
-          time: "10:00 - 20:00",
-          title: "EM BREVE",
-          description: "Programação completa será divulgada em breve",
+          time: "09:30",
+          title: "ABERTURA DO COMPLEXO TARUMÃ AO PÚBLICO",
+          description: "Abertura oficial do evento",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DA PISTA PARA TESTE RIDE",
+          description: "Test rides disponíveis",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DAS PISTA OFF ROAD (CURSOS E TESTE RIDE)",
+          description: "Atividades OFF Road",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DA PRAÇA DE ALIMENTAÇÃO",
+          description: "Praça de alimentação disponível",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DA FEIRA DE EXPOSITORES AO PÚBLICO",
+          description: "Feira de expositores aberta ao público",
+        },
+        {
+          time: "12:00",
+          title: "APRESENTAÇÃO DO MOTO GRUPO CONFRARIA DA HAYABUSA",
+          description: "Apresentação na pista principal",
+        },
+        {
+          time: "13:00",
+          title: "INÍCIO DOS TEST RIDE E DEMAIS PISTAS",
+          description: "Test rides disponíveis para o público",
+        },
+        {
+          time: "17:00",
+          title: "SHOW CRIS COLTO - ACÚSTICO",
+          description: "Apresentação musical",
+        },
+        {
+          time: "18:00",
+          title: "SHOW BANDA CLASSIC RIDERS",
+          description: "Apresentação da banda Classic Riders",
+        },
+        {
+          time: "18:00",
+          title: "FIM DOS TEST RIDE NAS PISTAS",
+          description: "Encerramento dos test rides",
+        },
+        {
+          time: "20:00",
+          title: "ENCERRAMENTO DO DIA DO SALÃO MOTOFEST TARUMÃ",
+          description: "Fim das atividades do dia",
         },
       ],
     },
@@ -38,9 +143,64 @@ export default function AgendaPage() {
       date: "02 DE NOVEMBRO",
       activities: [
         {
-          time: "10:00 - 20:00",
-          title: "EM BREVE",
-          description: "Programação completa será divulgada em breve",
+          time: "09:30",
+          title: "ABERTURA DO COMPLEXO TARUMÃ AO PÚBLICO",
+          description: "Abertura oficial do evento",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DA PISTA PARA TESTE RIDE",
+          description: "Test rides disponíveis",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DAS PISTA OFF ROAD (CURSOS E TESTE RIDE)",
+          description: "Atividades OFF Road",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DA PRAÇA DE ALIMENTAÇÃO",
+          description: "Praça de alimentação disponível",
+        },
+        {
+          time: "10:00",
+          title: "ABERTURA DA FEIRA DE EXPOSITORES AO PÚBLICO",
+          description: "Feira de expositores aberta ao público",
+        },
+        {
+          time: "12:00",
+          title: "APRESENTAÇÃO SIMULANDO UMA CORRIDA DE MOTOS NA PISTA",
+          description: "Equipe do piloto Carlos Barcelos (5 a 8 min)",
+        },
+        {
+          time: "12:15",
+          title: "PARADA PARA ALMOÇO E DESCANSO DOS PILOTOS",
+          description: "Intervalo para almoço",
+        },
+        {
+          time: "13:00",
+          title: "INÍCIO DOS TEST RIDE E DEMAIS PISTAS",
+          description: "Test rides disponíveis para o público",
+        },
+        {
+          time: "15:00",
+          title: "SHOW CRIS COLTO - ACÚSTICO",
+          description: "Apresentação musical",
+        },
+        {
+          time: "16:00",
+          title: "SHOW BANDA CLASSIC RIDERS",
+          description: "Apresentação da banda Classic Riders",
+        },
+        {
+          time: "18:00",
+          title: "FIM DOS TEST RIDE NAS PISTAS",
+          description: "Encerramento dos test rides",
+        },
+        {
+          time: "20:00",
+          title: "ENCERRAMENTO DO SALÃO MOTOFEST TARUMÃ",
+          description: "Fim do evento",
         },
       ],
     },

@@ -11,6 +11,7 @@ export default function PublicLayout({ children }) {
     { href: "/ingressos", label: "Ingressos" },
     { href: "/atracoes", label: "Atrações" },
     { href: "/motos", label: "Motos" },
+    { href: "/off-road", label: "OFF Road" },
     { href: "/agenda", label: "Agenda" },
     { href: "/faq", label: "FAQ" },
   ];
@@ -88,6 +89,13 @@ export default function PublicLayout({ children }) {
                 onClick={() => setMenuOpen(false)}
               >
                 Motos
+              </Link>
+              <Link
+                href="/off-road"
+                className="text-white text-lg font-bold uppercase tracking-wide hover:text-red-600 transition"
+                onClick={() => setMenuOpen(false)}
+              >
+                OFF Road
               </Link>
               <Link
                 href="/agenda"
