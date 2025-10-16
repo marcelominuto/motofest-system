@@ -367,7 +367,7 @@ export default function OffRoadPage() {
 
                   // Redirecionar para WhatsApp após enviar webhook
                   window.open(
-                    "https://wa.me/5551999440999?text=Ol%C3%A1%21%20Gostaria%20de%20me%20inscrever%20no%20treinamento%20OFF%20Road%20do%20Enduro%20Park%20Tarum%C3%A3.%20Qual%20o%20pr%C3%B3ximo%20passo%3F",
+                    "https://wa.me/5551997445370?text=Ol%C3%A1%21%20Gostaria%20de%20me%20inscrever%20no%20treinamento%20OFF%20Road%20do%20Enduro%20Park%20Tarum%C3%A3.%20Qual%20o%20pr%C3%B3ximo%20passo%3F",
                     "_blank"
                   );
                 }}

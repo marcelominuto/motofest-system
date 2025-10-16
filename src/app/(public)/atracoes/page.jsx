@@ -18,7 +18,7 @@ export default function AtracoesPage() {
       id: 2,
       title: "SHOWS",
       description:
-        "O ritmo do Moto Fest Tarumã também estará no palco! Shows ao vivo com bandas que trazem atitude, energia e personalidade durante os quatro dias. 'Os Daltons', 'Classic Riders' e 'QNOME' prometem uma mistura de rock, clássico e música autoral para completar a 'vibe acelerada' do evento.",
+        "Prepare-se para muita música e energia! A banda Classic Riders traz os maiores clássicos do rock, e o cantor Cris Colt garante um show eletrizante com muito carisma e presença de palco.",
       icon: Music,
       image: "/shows.jpeg",
       color: "bg-gradient-to-br from-purple-600 to-purple-800",
