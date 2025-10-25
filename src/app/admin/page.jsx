@@ -69,6 +69,8 @@ export default function AdminDashboardPage() {
   const [porMarca, setPorMarca] = useState([]);
   const [porModelo, setPorModelo] = useState([]);
   const [porHorario, setPorHorario] = useState([]);
+  const [porIngresso, setPorIngresso] = useState([]);
+  const [faturamentoPorTipo, setFaturamentoPorTipo] = useState([]);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -93,6 +95,8 @@ export default function AdminDashboardPage() {
         projecaoReceita,
         mobilidade,
         categoriasMotos,
+        agendamentosPorIngresso,
+        faturamentoPorIngresso,
       ] = await Promise.all([
         fetch("/api/dashboard/checkin").then((res) => res.json()),
         fetch("/api/dashboard/test-rides").then((res) => res.json()),
@@ -118,6 +122,10 @@ export default function AdminDashboardPage() {
         fetch("/api/dashboard/projecao-receita").then((res) => res.json()),
         fetch("/api/dashboard/mobilidade").then((res) => res.json()),
         fetch("/api/dashboard/categorias-motos").then((res) => res.json()),
+        fetch("/api/dashboard/por-ingresso").then((res) => res.json()),
+        fetch("/api/dashboard/faturamento-por-ingresso").then((res) =>
+          res.json()
+        ),
       ]);
 
       setDados({
@@ -155,6 +163,8 @@ export default function AdminDashboardPage() {
       setPorDia(dias);
       setPorModelo(modelos);
       setPorHorario(horarios);
+      setPorIngresso(agendamentosPorIngresso || []);
+      setFaturamentoPorTipo(faturamentoPorIngresso || []);
     };
 
     fetchAll();
@@ -637,6 +647,70 @@ export default function AdminDashboardPage() {
                 </div>
               ))}
             </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Gráficos de Ingresso */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+        {/* Agendamentos por Tipo de Ingresso */}
+        <Card className="bg-white shadow-xl border-0 rounded-xl">
+          <CardHeader className="px-8 pt-6">
+            <CardTitle className="text-lg font-semibold text-gray-900">
+              Agendamentos por Tipo de Ingresso
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={porIngresso}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="tipo" stroke="#6b7280" />
+                <YAxis allowDecimals={false} stroke="#6b7280" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "8px",
+                  }}
+                />
+                <Bar
+                  dataKey="quantidade"
+                  fill="#8b5cf6"
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Faturamento por Tipo de Ingresso */}
+        <Card className="bg-white shadow-xl border-0 rounded-xl">
+          <CardHeader className="px-8 pt-6">
+            <CardTitle className="text-lg font-semibold text-gray-900">
+              Faturamento por Tipo de Ingresso
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={faturamentoPorTipo}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="tipo" stroke="#6b7280" />
+                <YAxis stroke="#6b7280" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "8px",
+                  }}
+                  formatter={(value) => `R$ ${value.toLocaleString("pt-BR")}`}
+                />
+                <Bar
+                  dataKey="faturamento"
+                  fill="#059669"
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>

@@ -118,7 +118,7 @@ export default function AgendaPage() {
         },
         {
           time: "17:00",
-          title: "SHOW CRIS COLTO - ACÚSTICO",
+          title: "SHOW CRIS COLT - ACÚSTICO",
           description: "Apresentação musical",
         },
         {
@@ -181,11 +181,6 @@ export default function AgendaPage() {
           time: "13:00",
           title: "INÍCIO DOS TEST RIDE E DEMAIS PISTAS",
           description: "Test rides disponíveis para o público",
-        },
-        {
-          time: "15:00",
-          title: "SHOW CRIS COLTO - ACÚSTICO",
-          description: "Apresentação musical",
         },
         {
           time: "16:00",

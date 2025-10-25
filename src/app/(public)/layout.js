@@ -10,6 +10,7 @@ export default function PublicLayout({ children }) {
   const navLinks = [
     { href: "/ingressos", label: "Ingressos" },
     { href: "/atracoes", label: "Atrações" },
+    { href: "/expositores", label: "Expositores" },
     { href: "/motos", label: "Motos" },
     { href: "/off-road", label: "OFF Road" },
     { href: "/agenda", label: "Agenda" },
@@ -82,6 +83,13 @@ export default function PublicLayout({ children }) {
                 onClick={() => setMenuOpen(false)}
               >
                 Atrações
+              </Link>
+              <Link
+                href="/expositores"
+                className="text-white text-lg font-bold uppercase tracking-wide hover:text-red-600 transition"
+                onClick={() => setMenuOpen(false)}
+              >
+                Expositores
               </Link>
               <Link
                 href="/motos"

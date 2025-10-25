@@ -1,8 +1,7 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Bike, Building, MapPin, Users, MessageCircle } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Bike, Building, Users, MessageCircle, Utensils } from "lucide-react";
 
 export default function ExpositoresPage() {
   // Marcas de moto (primeiro grupo)
@@ -13,75 +12,365 @@ export default function ExpositoresPage() {
       description:
         "Conheça a linha completa de motocicletas Honda, desde as scooters urbanas até as esportivas de alta performance.",
       category: "Marca de Moto",
-      image: "/exposicoes.jpeg",
+      image: "/expositores/honda.png",
       color: "bg-gradient-to-br from-red-600 to-red-800",
     },
     {
       id: 2,
-      title: "YAMAHA",
+      title: "BAJAJ",
       description:
-        "Descubra a tecnologia e inovação das motos Yamaha, com foco em performance e confiabilidade.",
+        "Descubra a confiabilidade das motocicletas Bajaj, líder em vendas na Índia e presente no Brasil.",
       category: "Marca de Moto",
-      image: "/exposicoes.jpeg",
-      color: "bg-gradient-to-br from-blue-600 to-blue-800",
+      image: "/expositores/bajaj.png",
+      color: "bg-gradient-to-br from-yellow-600 to-orange-600",
     },
     {
       id: 3,
+      title: "HARLEY-DAVIDSON",
+      description:
+        "Viva a liberdade e o estilo de vida Harley-Davidson com suas icônicas motocicletas customizadas.",
+      category: "Marca de Moto",
+      image: "/expositores/harley.png",
+      color: "bg-gradient-to-br from-orange-600 to-orange-800",
+    },
+    {
+      id: 4,
+      title: "BMW",
+      description:
+        "Descubra a elegância e tecnologia das motocicletas BMW, conhecidas por sua engenharia alemã de precisão.",
+      category: "Marca de Moto",
+      image: "/expositores/bmw.png",
+      color: "bg-gradient-to-br from-blue-600 to-blue-800",
+    },
+    {
+      id: 5,
+      title: "SHINERAY",
+      description:
+        "Conheça as motocicletas Shineray, combinando qualidade chinesa com preços acessíveis para o mercado brasileiro.",
+      category: "Marca de Moto",
+      image: "/expositores/shineray.png",
+      color: "bg-gradient-to-br from-purple-600 to-purple-800",
+    },
+    {
+      id: 6,
       title: "KAWASAKI",
       description:
         "Explore a linha Kawasaki com suas motocicletas esportivas e de aventura, conhecidas pela agressividade e tecnologia.",
       category: "Marca de Moto",
+      image: "/expositores/kawasaki.png",
+      color: "bg-gradient-to-br from-green-600 to-green-800",
+    },
+  ];
+
+  // Motos Elétricas
+  const motosEletricas = [
+    {
+      id: 7,
+      title: "MOTOCHEFE",
+      description:
+        "Motos elétricas inovadoras para mobilidade urbana sustentável.",
+      category: "Moto Elétrica",
       image: "/exposicoes.jpeg",
       color: "bg-gradient-to-br from-green-600 to-green-800",
     },
     {
-      id: 4,
-      title: "SUZUKI",
-      description:
-        "Conheça as motocicletas Suzuki, combinando tradição japonesa com inovação tecnológica.",
-      category: "Marca de Moto",
+      id: 8,
+      title: "JOY",
+      description: "Soluções em mobilidade elétrica para o futuro das cidades.",
+      category: "Moto Elétrica",
       image: "/exposicoes.jpeg",
-      color: "bg-gradient-to-br from-yellow-600 to-orange-600",
+      color: "bg-gradient-to-br from-blue-600 to-blue-800",
+    },
+    {
+      id: 9,
+      title: "SUDU",
+      description: "Tecnologia elétrica avançada para motocicletas do futuro.",
+      category: "Moto Elétrica",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-purple-600 to-purple-800",
+    },
+    {
+      id: 10,
+      title: "WEHAWK",
+      description: "Inovação em mobilidade elétrica para o mercado brasileiro.",
+      category: "Moto Elétrica",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-teal-600 to-teal-800",
+    },
+    {
+      id: 11,
+      title: "PANDA/PD",
+      description: "Motos elétricas compactas e eficientes para o dia a dia.",
+      category: "Moto Elétrica",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-orange-600 to-orange-800",
+    },
+    {
+      id: 12,
+      title: "MUUV",
+      description:
+        "Mobilidade urbana elétrica com design moderno e sustentável.",
+      category: "Moto Elétrica",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-cyan-600 to-cyan-800",
+    },
+    {
+      id: 13,
+      title: "TUI",
+      description: "Tecnologia elétrica de ponta para motocicletas urbanas.",
+      category: "Moto Elétrica",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-pink-600 to-pink-800",
+    },
+    {
+      id: 14,
+      title: "TRIBIKES TRICICLOS",
+      description:
+        "Triciclos elétricos para mobilidade alternativa e sustentável.",
+      category: "Moto Elétrica",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-indigo-600 to-indigo-800",
+    },
+    {
+      id: 15,
+      title: "DUACT MOTO ELÉTRICA",
+      description:
+        "Inovação em motocicletas elétricas para o mercado nacional.",
+      category: "Moto Elétrica",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-emerald-600 to-emerald-800",
     },
   ];
 
-  // Demais expositores
-  const demaisExpositores = [
+  // Expositores da Praça de Alimentação
+  const praçaAlimentacao = [
     {
-      id: 5,
-      title: "ACESSÓRIOS MOTOCICLÍSTICOS",
+      id: 16,
+      title: "CASAMATA 1",
+      description: "Variedade de pratos e lanches para todos os gostos.",
+      category: "Alimentação",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-orange-600 to-orange-800",
+    },
+    {
+      id: 17,
+      title: "CASAMATA 2",
+      description: "Cardápio diversificado com opções para toda a família.",
+      category: "Alimentação",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-red-600 to-red-800",
+    },
+    {
+      id: 18,
+      title: "CASAMATA 3",
+      description: "Sabores únicos e pratos especiais do evento.",
+      category: "Alimentação",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-yellow-600 to-yellow-800",
+    },
+    {
+      id: 19,
+      title: "JOHNNY BURGUERS",
+      description: "Hambúrgueres artesanais e lanches gourmet.",
+      category: "Alimentação",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-amber-600 to-amber-800",
+    },
+    {
+      id: 20,
+      title: "ANNA BISTRO",
+      description: "Culinária refinada e pratos especiais.",
+      category: "Alimentação",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-rose-600 to-rose-800",
+    },
+    {
+      id: 21,
+      title: "BRUTUS HAMBURGUERIA",
+      description: "Hambúrgueres premium e combos especiais.",
+      category: "Alimentação",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-red-700 to-red-900",
+    },
+    {
+      id: 22,
+      title: "CARVALHO EVENTOS",
+      description: "Catering especializado para eventos motociclísticos.",
+      category: "Alimentação",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-green-600 to-green-800",
+    },
+    {
+      id: 23,
+      title: "PASTELÃO DO MESTRE",
+      description: "Pastéis artesanais e salgados tradicionais.",
+      category: "Alimentação",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-yellow-700 to-yellow-900",
+    },
+  ];
+
+  // Estandes diversos
+  const estandesDiversos = [
+    {
+      id: 24,
+      title: "FILTRALUB",
       description:
-        "Equipamentos de segurança, capacetes, luvas, jaquetas e acessórios para pilotos e motociclistas.",
+        "Especialistas em filtros e lubrificantes para motocicletas.",
+      category: "Acessórios",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-blue-600 to-blue-800",
+    },
+    {
+      id: 25,
+      title: "PROMEC 4X4",
+      description: "Equipamentos e acessórios para aventuras off-road.",
+      category: "Acessórios",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-green-600 to-green-800",
+    },
+    {
+      id: 26,
+      title: "ROAD EXPLORER",
+      description: "Aventuras e viagens motociclísticas pelo Brasil.",
+      category: "Turismo",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-orange-600 to-orange-800",
+    },
+    {
+      id: 27,
+      title: "RUTA 40 MOTOTURISMO",
+      description:
+        "Especialistas em viagens motociclísticas pela América Latina.",
+      category: "Turismo",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-red-600 to-red-800",
+    },
+    {
+      id: 28,
+      title: "ALLTRACKS",
+      description: "Equipamentos e acessórios para trilhas e aventuras.",
       category: "Acessórios",
       image: "/exposicoes.jpeg",
       color: "bg-gradient-to-br from-purple-600 to-purple-800",
     },
     {
-      id: 6,
-      title: "PNEUS E RODAS",
-      description:
-        "Especialistas em pneus para motocicletas, rodas esportivas e acessórios para personalização.",
-      category: "Pneus",
+      id: 29,
+      title: "MOTOBOLHAS",
+      description: "Acessórios e equipamentos para motociclistas.",
+      category: "Acessórios",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-cyan-600 to-cyan-800",
+    },
+    {
+      id: 30,
+      title: "GARAGEM PARA MOTOS",
+      description: "Serviços de manutenção e reparos para motocicletas.",
+      category: "Serviços",
       image: "/exposicoes.jpeg",
       color: "bg-gradient-to-br from-gray-600 to-gray-800",
     },
     {
-      id: 7,
-      title: "SEGUROS E FINANCIAMENTOS",
-      description:
-        "Soluções em seguros para motocicletas e opções de financiamento para sua próxima moto.",
-      category: "Serviços",
+      id: 31,
+      title: "RIDE BRASIL",
+      description: "Comunidade e eventos para motociclistas brasileiros.",
+      category: "Comunidade",
       image: "/exposicoes.jpeg",
-      color: "bg-gradient-to-br from-teal-600 to-teal-800",
+      color: "bg-gradient-to-br from-yellow-600 to-yellow-800",
     },
     {
-      id: 8,
-      title: "PERSONALIZAÇÃO E TUNING",
+      id: 32,
+      title: "EKO 7",
+      description: "Soluções sustentáveis para o setor motociclístico.",
+      category: "Sustentabilidade",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-emerald-600 to-emerald-800",
+    },
+    {
+      id: 33,
+      title: "CEAT",
+      description: "Pneus e soluções para motocicletas.",
+      category: "Pneus",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-indigo-600 to-indigo-800",
+    },
+    {
+      id: 34,
+      title: "MOTUL",
       description:
-        "Serviços de personalização, tuning e customização para deixar sua moto única.",
-      category: "Customização",
+        "Lubrificantes e produtos para motocicletas de alta performance.",
+      category: "Lubrificantes",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-red-700 to-red-900",
+    },
+    {
+      id: 35,
+      title: "OFF RIDER",
+      description: "Equipamentos e acessórios para pilotos off-road.",
+      category: "Acessórios",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-orange-700 to-orange-900",
+    },
+    {
+      id: 36,
+      title: "CONFRARIA DA HAYABUSA",
+      description: "Clube de proprietários da lendária Hayabusa.",
+      category: "Comunidade",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-blue-700 to-blue-900",
+    },
+    {
+      id: 37,
+      title: "T-SHIRT",
+      description: "Camisetas e produtos personalizados para motociclistas.",
+      category: "Vestuário",
       image: "/exposicoes.jpeg",
       color: "bg-gradient-to-br from-pink-600 to-pink-800",
+    },
+  ];
+
+  // Boutiques e multimarcas
+  const boutiquesMultimarcas = [
+    {
+      id: 38,
+      title: "SPINELLI BOUTIQUE",
+      description:
+        "Boutique especializada em acessórios e vestuário motociclístico.",
+      category: "Boutique",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-purple-600 to-purple-800",
+    },
+    {
+      id: 39,
+      title: "MELVI MOTOS",
+      description: "Multimarcas com variedade de motocicletas e acessórios.",
+      category: "Multimarcas",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-green-600 to-green-800",
+    },
+    {
+      id: 40,
+      title: "HS CONSÓRCIOS",
+      description: "Soluções em consórcio para aquisição de motocicletas.",
+      category: "Financiamento",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-blue-600 to-blue-800",
+    },
+    {
+      id: 41,
+      title: "TERRASUL MOTOS",
+      description: "Concessionária multimarcas com variedade de modelos.",
+      category: "Concessionária",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-orange-600 to-orange-800",
+    },
+    {
+      id: 42,
+      title: "TOMI MOTOLAND",
+      description: "Especialistas em motocicletas e acessórios diversos.",
+      category: "Multimarcas",
+      image: "/exposicoes.jpeg",
+      color: "bg-gradient-to-br from-red-600 to-red-800",
     },
   ];
 
@@ -100,36 +389,6 @@ export default function ExpositoresPage() {
             <p className="text-gray-300 text-lg">
               Conheça as principais marcas e empresas do setor motociclístico
             </p>
-          </div>
-
-          {/* Mapa/Planta do Evento */}
-          <div className="mb-16">
-            <Card className="bg-[#222] border border-gray-700 hover:border-red-500 transition-all duration-300">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <MapPin className="w-8 h-8 text-red-500" />
-                  <h2
-                    className="text-3xl font-bold text-white"
-                    style={{ fontFamily: "Anton, sans-serif" }}
-                  >
-                    MAPA DO EVENTO
-                  </h2>
-                </div>
-                <div className="bg-gray-800 rounded-lg p-8 text-center">
-                  <div className="w-full h-64 bg-gray-700 rounded-lg flex items-center justify-center">
-                    <div className="text-center">
-                      <MapPin className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-                      <p className="text-gray-400 text-lg">
-                        Mapa/Planta do evento será adicionado aqui
-                      </p>
-                      <p className="text-gray-500 text-sm mt-2">
-                        Dimensões recomendadas: 1200x800px
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Marcas de Moto */}
@@ -159,7 +418,7 @@ export default function ExpositoresPage() {
                         backgroundPosition: "center",
                       }}
                     >
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-all duration-300"></div>
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-300"></div>
                       <div className="relative z-10 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <h3
                           className="text-white font-bold text-lg"
@@ -175,7 +434,38 @@ export default function ExpositoresPage() {
             </div>
           </div>
 
-          {/* Demais Expositores */}
+          {/* Motos Elétricas */}
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-8">
+              <Bike className="w-8 h-8 text-green-500" />
+              <h2
+                className="text-3xl font-bold text-white"
+                style={{ fontFamily: "Anton, sans-serif" }}
+              >
+                MOTOS ELÉTRICAS
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {motosEletricas.map((moto) => {
+                return (
+                  <div
+                    key={moto.id}
+                    className="bg-[#222] border border-gray-700 rounded-lg p-4 hover:border-green-500 transition-all duration-300"
+                  >
+                    <h3
+                      className="text-white font-bold text-2xl"
+                      style={{ fontFamily: "Anton, sans-serif" }}
+                    >
+                      {moto.title}
+                    </h3>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Estandes Diversos */}
           <div className="mb-16">
             <div className="flex items-center gap-3 mb-8">
               <Building className="w-8 h-8 text-blue-500" />
@@ -183,36 +473,86 @@ export default function ExpositoresPage() {
                 className="text-3xl font-bold text-white"
                 style={{ fontFamily: "Anton, sans-serif" }}
               >
-                DEMAIS EXPOSITORES
+                ESTANDES DIVERSOS
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {demaisExpositores.map((expositor) => {
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {estandesDiversos.map((expositor) => {
                 return (
-                  <Card
+                  <div
                     key={expositor.id}
-                    className="bg-[#222] border border-gray-700 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 overflow-hidden group"
+                    className="bg-[#222] border border-gray-700 rounded-lg p-4 hover:border-blue-500 transition-all duration-300"
                   >
-                    <div
-                      className={`h-32 ${expositor.color} relative overflow-hidden flex items-center justify-center`}
-                      style={{
-                        backgroundImage: `url(${expositor.image})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
+                    <h3
+                      className="text-white font-bold text-2xl"
+                      style={{ fontFamily: "Anton, sans-serif" }}
                     >
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-all duration-300"></div>
-                      <div className="relative z-10 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <h3
-                          className="text-white font-bold text-lg"
-                          style={{ fontFamily: "Anton, sans-serif" }}
-                        >
-                          {expositor.title}
-                        </h3>
-                      </div>
-                    </div>
-                  </Card>
+                      {expositor.title}
+                    </h3>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Boutiques e Multimarcas */}
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-8">
+              <Users className="w-8 h-8 text-purple-500" />
+              <h2
+                className="text-3xl font-bold text-white"
+                style={{ fontFamily: "Anton, sans-serif" }}
+              >
+                BOUTIQUES E MULTIMARCAS
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {boutiquesMultimarcas.map((expositor) => {
+                return (
+                  <div
+                    key={expositor.id}
+                    className="bg-[#222] border border-gray-700 rounded-lg p-4 hover:border-purple-500 transition-all duration-300"
+                  >
+                    <h3
+                      className="text-white font-bold text-2xl"
+                      style={{ fontFamily: "Anton, sans-serif" }}
+                    >
+                      {expositor.title}
+                    </h3>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Praça de Alimentação */}
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-8">
+              <Utensils className="w-8 h-8 text-orange-500" />
+              <h2
+                className="text-3xl font-bold text-white"
+                style={{ fontFamily: "Anton, sans-serif" }}
+              >
+                PRAÇA DE ALIMENTAÇÃO
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {praçaAlimentacao.map((expositor) => {
+                return (
+                  <div
+                    key={expositor.id}
+                    className="bg-[#222] border border-gray-700 rounded-lg p-4 hover:border-orange-500 transition-all duration-300"
+                  >
+                    <h3
+                      className="text-white font-bold text-2xl"
+                      style={{ fontFamily: "Anton, sans-serif" }}
+                    >
+                      {expositor.title}
+                    </h3>
+                  </div>
                 );
               })}
             </div>

@@ -28,6 +28,7 @@ export default function AgendamentosPage() {
   const [filtroMarca, setFiltroMarca] = useState("");
   const [filtroCheckin, setFiltroCheckin] = useState("");
   const [filtroStatus, setFiltroStatus] = useState("");
+  const [filtroIngresso, setFiltroIngresso] = useState("");
   const [buscaCliente, setBuscaCliente] = useState("");
 
   // Opções únicas para filtros
@@ -85,6 +86,19 @@ export default function AgendamentosPage() {
       )
     ).sort();
   }, [agendamentos, filtroMarca]);
+  const opcoesIngresso = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          agendamentos
+            .map((a) => a.moto?.ingresso?.tipo)
+            .filter(
+              (v) => v !== null && v !== undefined && String(v).trim() !== ""
+            )
+        )
+      ).sort(),
+    [agendamentos]
+  );
 
   // Filtro aplicado
   const agendamentosFiltrados = useMemo(() => {
@@ -108,6 +122,8 @@ export default function AgendamentosPage() {
       if (filtroCheckin === "nao-feitos" && a.checkin) return false;
       if (filtroStatus === "pago" && a.status !== "pago") return false;
       if (filtroStatus === "cortesia" && a.status !== "cortesia") return false;
+      if (filtroIngresso && a.moto?.ingresso?.tipo !== filtroIngresso)
+        return false;
       return true;
     });
   }, [
@@ -118,6 +134,7 @@ export default function AgendamentosPage() {
     filtroMarca,
     filtroCheckin,
     filtroStatus,
+    filtroIngresso,
     buscaCliente,
   ]);
 
@@ -310,6 +327,13 @@ export default function AgendamentosPage() {
     filtroMoto === "" || opcoesMotoValidas.includes(filtroMoto)
       ? filtroMoto
       : "";
+  const opcoesIngressoValidas = opcoesIngresso.filter(
+    (i) => i !== null && i !== undefined && String(i).trim() !== ""
+  );
+  const filtroIngressoSeguro =
+    filtroIngresso === "" || opcoesIngressoValidas.includes(filtroIngresso)
+      ? filtroIngresso
+      : "";
 
   function exportarParaExcel(table) {
     const rows = table.getFilteredRowModel().rows;
@@ -322,7 +346,17 @@ export default function AgendamentosPage() {
         Ingresso: ag.ingresso?.tipo || "-",
         Moto: ag.moto?.nome || "-",
         Marca: ag.moto?.marca?.nome || "-",
-        Data: ag.data ? new Date(ag.data).toLocaleDateString() : "-",
+        Data: ag.data
+          ? (() => {
+              const dataStr =
+                typeof ag.data === "string"
+                  ? ag.data.split("T")[0]
+                  : ag.data.toISOString().split("T")[0];
+              return new Date(dataStr + "T00:00:00").toLocaleDateString(
+                "pt-BR"
+              );
+            })()
+          : "-",
         Horário: ag.horario?.hora || "-",
         Status: ag.status || "-",
         Checkin: ag.checkin ? "Sim" : "Não",
@@ -426,6 +460,23 @@ export default function AgendamentosPage() {
                   {opcoesMotoValidas.map((m) => (
                     <option key={m} value={m}>
                       {m}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            {opcoesIngressoValidas.length === 0 ? null : (
+              <div className="flex flex-col">
+                <Label className="mb-1">Tipo de Ingresso</Label>
+                <select
+                  value={filtroIngresso}
+                  onChange={(e) => setFiltroIngresso(e.target.value)}
+                  className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
+                >
+                  <option value="">Todos</option>
+                  {opcoesIngressoValidas.map((tipo) => (
+                    <option key={tipo} value={tipo}>
+                      {tipo}
                     </option>
                   ))}
                 </select>

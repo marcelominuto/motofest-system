@@ -27,7 +27,7 @@ export async function GET(req) {
       include: {
         cliente: true,
         ingresso: true,
-        moto: { include: { marca: true } },
+        moto: { include: { marca: true, ingresso: true } },
         horario: true,
         pedido: true, // incluir o pedido para exibir o código
       },
