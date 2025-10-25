@@ -17,6 +17,7 @@ import {
   LogOut,
   TrafficCone,
   Mail,
+  CalendarSearch,
 } from "lucide-react";
 
 const navItems = [
@@ -59,6 +60,11 @@ const navItems = [
     label: "Motos",
     href: "/admin/motos",
     icon: <Bike className="w-5 h-5 mr-2" />,
+  },
+  {
+    label: "Disponibilidade",
+    href: "/admin/disponibilidade",
+    icon: <CalendarSearch className="w-5 h-5 mr-2" />,
   },
   {
     label: "Horários",
