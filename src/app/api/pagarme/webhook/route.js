@@ -73,14 +73,16 @@ export async function POST(req) {
 
       // Se o pedido não existe, criar agora
       if (!pedido) {
-        // Buscar ou criar cliente usando dados do webhook
-        let cliente = await prisma.cliente.findFirst({
-          where: {
-            OR: [
-              { cpf: order.customer.document },
-              { email: order.customer.email },
-            ],
-          },
+        // Normalizar e formatar CPF no padrão do banco (XXX.XXX.XXX-XX)
+        const cpfSemFormatacao = order.customer.document.replace(/\D/g, "");
+        const cpfFormatado = cpfSemFormatacao.replace(
+          /(\d{3})(\d{3})(\d{3})(\d{2})/,
+          "$1.$2.$3-$4"
+        );
+
+        // Buscar cliente APENAS por CPF formatado
+        let cliente = await prisma.cliente.findUnique({
+          where: { cpf: cpfFormatado },
         });
 
         if (!cliente) {
@@ -88,7 +90,7 @@ export async function POST(req) {
             data: {
               nome: order.customer.name,
               email: order.customer.email,
-              cpf: order.customer.document,
+              cpf: cpfFormatado,
               cnh: "PENDENTE", // Será atualizado depois
               telefone: `${order.customer.phones.mobile_phone.area_code}${order.customer.phones.mobile_phone.number}`,
             },
