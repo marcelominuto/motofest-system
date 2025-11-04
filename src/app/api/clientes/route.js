@@ -1,14 +1,38 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { jwtVerify } from "jose";
 
-// GET: Busca cliente por CPF (público) ou retorna todos se autenticado (admin)
+// Função para verificar autenticação
+async function requireAdminAuth(request) {
+  const token = request.cookies.get("auth_token")?.value;
+  if (!token) return false;
+  try {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    await jwtVerify(token, secret);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// GET: Apenas admin autenticado pode buscar clientes
 export async function GET(req) {
   try {
+    const isAuthenticated = await requireAdminAuth(req);
+
+    // Bloquear completamente acesso não autenticado
+    if (!isAuthenticated) {
+      return NextResponse.json(
+        { error: "Não autorizado. Acesso restrito a administradores." },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(req.url);
     const cpf = searchParams.get("cpf");
 
+    // Se autenticado (admin), pode listar todos ou buscar por CPF
     if (cpf) {
-      // Busca apenas pelo CPF informado
       const cliente = await prisma.cliente.findUnique({ where: { cpf } });
       if (!cliente) {
         return NextResponse.json(
@@ -16,17 +40,10 @@ export async function GET(req) {
           { status: 404 }
         );
       }
-      // Retorne apenas dados mínimos, nunca dados sensíveis!
-      return NextResponse.json({
-        id: cliente.id,
-        nome: cliente.nome,
-        email: cliente.email,
-        cpf: cliente.cpf,
-        // ...outros campos públicos
-      });
+      return NextResponse.json(cliente);
     }
 
-    // Se não houver filtro, retorna todos (mas só admin chega aqui)
+    // Listar todos os clientes (apenas admin)
     const clientes = await prisma.cliente.findMany({
       orderBy: { nome: "asc" },
     });
