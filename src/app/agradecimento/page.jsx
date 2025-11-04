@@ -29,7 +29,7 @@ export default function AgradecimentoPage() {
                 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-2"
                 style={{ fontFamily: "Anton, sans-serif" }}
               >
-                + 800
+                + 400
               </p>
               <p className="text-lg md:text-xl font-bold text-white">
                 TEST RIDES REALIZADOS!
